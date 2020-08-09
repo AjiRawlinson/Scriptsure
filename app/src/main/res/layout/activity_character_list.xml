@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Character_List_Activity">
+
+    <LinearLayout
+        android:orientation = "vertical"
+        android:layout_width = "match_parent"
+        android:layout_height = "match_parent"
+        android:gravity = "top"
+        android:layout_marginTop="10px"
+        android:layout_weight = "1"
+        >
+
+        <TextView
+            android:id="@+id/tvPlayTitleCharacterList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="Play Title: Characters"
+            android:textSize="60dp"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/RVCharacter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            tools:layout_editor_absoluteX="1dp"
+            tools:layout_editor_absoluteY="1dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+
+            <Button
+                android:id="@+id/btn_Another_Character"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Add New Character"
+                android:onClick="addCharacterBtn"
+                tools:layout_editor_absoluteX="137dp"
+                tools:layout_editor_absoluteY="197dp" />
+
+            <Button
+                android:id="@+id/btn_View_Scenes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="View Scenes"
+                android:onClick="viewScenesBtn"
+                tools:layout_editor_absoluteX="137dp"
+                tools:layout_editor_absoluteY="197dp" />
+
+    </LinearLayout>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
