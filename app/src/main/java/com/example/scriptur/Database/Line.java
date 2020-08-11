@@ -10,10 +10,12 @@ public class Line {
 
     public Line() { }
 
-    public Line(Character character, String dialog, Scene scene) {
+    public Line(int id, Character character, String dialog, Scene scene, int order) {
+        this.UID = id;
         this.character = character;
-        this.scene = scene;
         this.dialog = dialog;
+        this.scene = scene;
+        this.orderNumber = order;
     }
 
     public String getDialog() {

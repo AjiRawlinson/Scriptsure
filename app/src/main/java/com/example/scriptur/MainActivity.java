@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void libraryBtn(View v) {
-        Intent in = new Intent(this, NewPlayActivity.class); //change to library activity
+        Intent in = new Intent(this, Play_List_Activity.class); //change to library activity
         startActivity(in);
     }
 

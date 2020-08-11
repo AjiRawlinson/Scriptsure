@@ -9,7 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Character_List_Activity"></activity>
+        <activity android:name=".Play_List_Activity">
+
+        </activity>
+        <activity android:name=".Line_List_Activity" />
+        <activity android:name=".Character_List_Activity" />
         <activity android:name=".Scene_List_Activity" />
         <activity android:name=".NewLineActivity" />
         <activity android:name=".NewCharacterActivity" />

@@ -33,24 +33,20 @@ public class NewSceneActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_scene);
+        setTitle("New Scene");
 
         DBA = new DBAdaptor(this);
-        playTitle = (TextView) findViewById(R.id.tvPlayTitleNewScene);
         name = (EditText) findViewById(R.id.etSceneName);
         characterLV = (ListView) findViewById(R.id.lvCharacters);
         characterIDs = new ArrayList<>();
         characterNames = new ArrayList<>();
+        order = DBA.getNumberOfScenesInPlay(playid);
 
         Intent in = getIntent();
         playid = in.getIntExtra("PLAY_ID", 1);
-        Toast.makeText(getApplicationContext(), "Play ID: " + playid, Toast.LENGTH_LONG).show();
-
-       playTitle.setText(DBA.getPlayByID(playid).getTitle());
-        order = DBA.getNumberOfScenesInPlay(playid);
 
         ArrayList<Character> characterList = DBA.getAllCharactersInPlay(playid);
         for(Character charater: characterList) {
-//            characterIDs.add(charater.getUID());
             characterNames.add(charater.getName());
         }
 
@@ -61,11 +57,14 @@ public class NewSceneActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SparseBooleanArray charactersChecker = characterLV.getCheckedItemPositions();
+                characterIDs.clear();
 
-                for(int i = 0; i<charactersChecker.size(); i++) {
+                for(int i = 0; i<characterNames.size(); i++) {
                     if(charactersChecker.get(i)) {
-                        int key = charactersChecker.keyAt(position);//not sure if this is needed, in tutorial
-                        Character character = DBA.getCharacterByName(playid, characterLV.getItemAtPosition(key).toString());
+                        Toast.makeText(getApplicationContext(), "position: " + position + " i value: " + i, Toast.LENGTH_LONG).show();
+
+//                        int key = charactersChecker.keyAt(position);//not sure if this is needed, but in tutorial
+                        Character character = DBA.getCharacterByName(playid, characterLV.getItemAtPosition(i).toString());
                         characterIDs.add(character.getUID());
                     }
                 }
@@ -74,10 +73,16 @@ public class NewSceneActivity extends AppCompatActivity {
     }
 
     public void saveSceneBtn(View v) {
-        DBA.insertScene(name.getText().toString(), characterIDs, playid, order);
+        if(characterIDs.size() < 1) {
+            Toast.makeText(this, "Scene must contain at least 1 character, Please select a Character.", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Characters" + characterIDs + "Into play: " + playid, Toast.LENGTH_LONG).show();
 
-        Intent in = new Intent(this, Scene_List_Activity.class);
-        in.putExtra("PLAY_ID", playid);
-        startActivity(in);
+            DBA.insertScene(name.getText().toString(), characterIDs, playid, order);
+
+            Intent in = new Intent(this, Scene_List_Activity.class);
+            in.putExtra("PLAY_ID", playid);
+            startActivity(in);
+        }
     }
 }

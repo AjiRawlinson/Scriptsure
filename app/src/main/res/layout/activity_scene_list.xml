@@ -15,17 +15,6 @@
         android:layout_weight = "1"
         >
 
-    <TextView
-        android:id="@+id/tvPlayTitleSceneList"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:text="Play Title: Scenes"
-        android:textSize="60dp"
-        />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/RVScene"
         android:layout_width="match_parent"
@@ -34,16 +23,33 @@
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="1dp" />
 
-    <Button
-        android:id="@+id/btn_Another_Character"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Add New Character"
-        android:onClick="addSceneBtn"
-        tools:layout_editor_absoluteX="137dp"
-        tools:layout_editor_absoluteY="197dp" />
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
 
+        <Button
+            android:id="@+id/btn_Another_Character"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Add New Scene"
+            android:onClick="addSceneBtn"
+            tools:layout_editor_absoluteX="137dp"
+            tools:layout_editor_absoluteY="197dp" />
+
+        <Button
+            android:id="@+id/btn_View_Characters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="View characters"
+            android:onClick="viewCharactersBtn"
+            tools:layout_editor_absoluteX="137dp"
+            tools:layout_editor_absoluteY="197dp" />
+
+    </LinearLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

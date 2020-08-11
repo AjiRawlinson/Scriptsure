@@ -161,6 +161,22 @@ public class DBAdaptor {
         return id;
     }
 
+    public ArrayList<Scene> getAllScenes() {
+        ArrayList<Scene> sceneList = new ArrayList<>();
+        SQLiteDatabase DB = myHelper.getReadableDatabase();
+        String[] columns = {myHelper.SCENE_ID, myHelper.SCENE_NAME, myHelper.SCENE_PLAY_ID_FK,  myHelper.SCENE_ORDER};
+        Cursor cursor = DB.query(myHelper.SCENE_TABLE_NAME, columns, null, null, null, null, myHelper.SCENE_ORDER + " ASC");
+        while(cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex(myHelper.SCENE_ID));
+            String name = cursor.getString(cursor.getColumnIndex(myHelper.SCENE_NAME));
+            int playID = cursor.getInt(cursor.getColumnIndex(myHelper.SCENE_PLAY_ID_FK));
+            int order = cursor.getInt(cursor.getColumnIndex(myHelper.SCENE_ORDER));
+            Scene scene = new Scene(id, name, getPlayByID(playID), order);
+            sceneList.add(scene);
+        }
+        return sceneList;
+    }
+
     public ArrayList<Scene> getAllScenesInPlay(int playid) {
         ArrayList<Scene> sceneList = new ArrayList<>();
         SQLiteDatabase DB = myHelper.getReadableDatabase();
@@ -182,18 +198,29 @@ public class DBAdaptor {
         return null;
     }
 
-    public Scene getSceneByID(int playID, int id) {
+    public Scene getSceneByID(int id) {
+        ArrayList<Scene> sceneList = getAllScenes();
+        for(Scene scene: sceneList) {
+            if(scene.getUID() == id) { return scene; }
+        }
+        return null;
+    }
+
+
+    public Scene getSceneByIDandPlayID(int playID, int id) {
         ArrayList<Scene> sceneList = getAllScenesInPlay(playID);
         for(Scene scene: sceneList) {
             if(scene.getUID() == id) { return scene; }
         }
-            return null;
+        return null;
     }
 
-    public int getNumberOfScenesInPlay(int playID) {
+    public int getNumberOfScenesInPlay(int playID) { //only useful when adding scene at the end
         ArrayList<Scene> sceneList = getAllScenesInPlay(playID);
         return sceneList.size();
     }
+
+    //if deleting scene, have to make sure order updates its self for other scenes,
 
 
     public int getSceneIDByOrder(int playID, int order) {
@@ -206,6 +233,67 @@ public class DBAdaptor {
             return id;
         }
         return 0;
+    }
+
+    /*****************
+     *      Lines
+     *****************/
+
+    public long insertLine(int characterID, String dialog, int sceneID, int order) {
+        SQLiteDatabase DB = myHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(myHelper.LINE_CHARACTER_ID_FK, characterID);
+        cv.put(myHelper.LINE_DIALOG, dialog);
+        cv.put(myHelper.LINE_SCENE_ID_FK, sceneID);
+        cv.put(myHelper.LINE_ORDER, order);
+        long id = DB.insert(myHelper.LINE_TABLE_NAME,null, cv);
+        return id;
+    }
+
+    public ArrayList<Line> getAllLinesInScene(int sceneID) {
+        ArrayList<Line> lineList = new ArrayList<>();
+        SQLiteDatabase DB = myHelper.getReadableDatabase();
+        String[] columns = {myHelper.LINE_ID, myHelper.LINE_CHARACTER_ID_FK, myHelper.LINE_DIALOG, myHelper.LINE_SCENE_ID_FK, myHelper.LINE_ORDER};
+        Cursor cursor = DB.query(myHelper.LINE_TABLE_NAME, columns, "" + myHelper.LINE_SCENE_ID_FK + " =?", new String[] {"" + sceneID}, null, null, myHelper.LINE_ORDER + " ASC");
+        while(cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_ID));
+            int characterID = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_CHARACTER_ID_FK));
+            String dialog = cursor.getString(cursor.getColumnIndex(myHelper.LINE_DIALOG));
+            int order = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_ORDER));
+            Line line = new Line(id, getCharacterByID(characterID), dialog, getSceneByID(sceneID), order);
+            lineList.add(line);
+        }
+        return lineList;
+    }
+
+    public ArrayList<Line> getAllLines() {
+        ArrayList<Line> lineList = new ArrayList<>();
+        SQLiteDatabase DB = myHelper.getReadableDatabase();
+        String[] columns = {myHelper.LINE_ID, myHelper.LINE_CHARACTER_ID_FK, myHelper.LINE_DIALOG, myHelper.LINE_SCENE_ID_FK, myHelper.LINE_ORDER};
+        Cursor cursor = DB.query(myHelper.LINE_TABLE_NAME, columns, null, null, null, null, myHelper.LINE_ORDER + " ASC");
+        while(cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_ID));
+            int characterID = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_CHARACTER_ID_FK));
+            String dialog = cursor.getString(cursor.getColumnIndex(myHelper.LINE_DIALOG));
+            int sceneID = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_SCENE_ID_FK));
+            int order = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_ORDER));
+            Line line = new Line(id, getCharacterByID(characterID), dialog, getSceneByID(sceneID), order);
+            lineList.add(line);
+        }
+        return lineList;
+    }
+
+    public Line getLineByID(int lineID) {
+        ArrayList<Line> lineList = getAllLines();
+        for(Line line: lineList) {
+            if(line.getUID() == lineID) { return line; }
+        }
+        return null;
+    }
+
+    public int getNumberOfLinesInScene(int sceneID) {
+        ArrayList<Line> lineList = getAllLinesInScene(sceneID);
+        return lineList.size();
     }
 
     /*****************
@@ -236,8 +324,6 @@ public class DBAdaptor {
         private static final String PLAY_TABLE_NAME = "play";
         private static final String PLAY_ID = "play_id";
         private static final String PLAY_TITLE = "title";
-//        private static final String PLAY_SCENES = "scenes";
-//        private static final String PLAY_CHARACTERS = "characters";
         private static final String CREATE_TABLE_PLAY = "CREATE TABLE " + PLAY_TABLE_NAME + " (" +
                                                         PLAY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                                                         PLAY_TITLE + " VARCHAR(255));";
@@ -277,14 +363,18 @@ public class DBAdaptor {
 
         private static final String LINE_TABLE_NAME = "line";
         private static final String LINE_ID = "line_id";
-        private static final String LINE_CHARACTER = "character";//??
+        private static final String LINE_CHARACTER_ID_FK = "character_id";
+        private static final String LINE_SCENE_ID_FK = "scene_id";
         private static final String LINE_DIALOG = "dialog";
         private static final String LINE_ORDER = "line_order";
         private static final String CREATE_LINE_TABLE = "CREATE TABLE " + LINE_TABLE_NAME + " (" +
                                                             LINE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                                                            LINE_CHARACTER + " VARCHAR(255), " +
+                                                            LINE_CHARACTER_ID_FK + " INTEGER, " +
+                                                            LINE_DIALOG + " TEXT, " +
+                                                            LINE_SCENE_ID_FK + " INTEGER, " +
                                                             LINE_ORDER + " INTEGER, " +
-                                                            LINE_DIALOG + " TEXT);";
+                                                            "FOREIGN KEY(" + LINE_CHARACTER_ID_FK + ") REFERENCES " + CHARACTER_TABLE_NAME + "(" + CHARACTER_ID + "), " +
+                                                            "FOREIGN KEY(" + LINE_SCENE_ID_FK + ") REFERENCES " + SCENE_TABLE_NAME + "(" + SCENE_ID + "));";
         private static final String DROP_LINE_TABLE = "DROP TABLE IF EXISTS " + LINE_TABLE_NAME;
 
         private static final String SCENE_CHARACTER_TABLE_NAME = "scene_character";
@@ -295,7 +385,7 @@ public class DBAdaptor {
                                                                     SCENE_CHARACTER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                                                                     SCENE_ID_FK + " INTEGER, " +
                                                                     CHARACTER_ID_FK + " INTEGER, " +
-                                                                    "FOREIGN KEY(" + SCENE_ID_FK + ") REFERENCES " + SCENE_TABLE_NAME + "(" + SCENE_ID + ")," +
+                                                                    "FOREIGN KEY(" + SCENE_ID_FK + ") REFERENCES " + SCENE_TABLE_NAME + "(" + SCENE_ID + "), " +
                                                                     "FOREIGN KEY(" + CHARACTER_ID_FK + ") REFERENCES " + CHARACTER_TABLE_NAME + "(" + CHARACTER_ID + "));";
         private static final String DROP_CHARACTER_SCENE_TABLE = "DROP TABLE IF EXISTS " + SCENE_CHARACTER_TABLE_NAME;
 

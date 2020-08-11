@@ -34,8 +34,9 @@ public class NewCharacterActivity extends AppCompatActivity implements AdapterVi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_character);
+        setTitle("New Character");
+
         DBA = new DBAdaptor(this);
-        playTitle = (TextView) findViewById(R.id.tvPlayTitleNewCharacter);
         name = (EditText) findViewById(R.id.etCharacterName);
         genderSpinner = (Spinner) findViewById(R.id.genderSpinner);
         userRoleSwitch = (Switch) findViewById(R.id.userRoleSwitch);
@@ -43,7 +44,6 @@ public class NewCharacterActivity extends AppCompatActivity implements AdapterVi
 
         Intent in = getIntent();
         playid = in.getIntExtra("PLAY_ID", 0);
-        playTitle.setText(DBA.getPlayByID(playid).getTitle());
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(NewCharacterActivity.this, android.R.layout.simple_spinner_dropdown_item, genderList);
         genderSpinner.setAdapter(adapter);
@@ -58,7 +58,7 @@ public class NewCharacterActivity extends AppCompatActivity implements AdapterVi
         DBA.insertCharacter(name.getText().toString(), gender, userRole, playid);
 
         Intent in = new Intent(this, Character_List_Activity.class);
-        in.putExtra("Play_ID_NEW_CHARACTER", playid);
+        in.putExtra("PLAY_ID", playid);
         startActivity(in);
     }
 

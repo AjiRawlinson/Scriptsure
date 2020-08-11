@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.scriptur.Database.Character;
 import com.example.scriptur.Database.DBAdaptor;
+import com.example.scriptur.RecyclerViewAdaptors.RVCharacterAdaptor;
 
 import java.util.ArrayList;
 
@@ -28,15 +29,11 @@ public class Character_List_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_character_list);
-        playTitle = (TextView) findViewById(R.id.tvPlayTitleCharacterList);
+
         DBA = new DBAdaptor(this);
         Intent in = getIntent();
-        playid = in.getIntExtra("Play_ID_NEW_CHARACTER", 0);
-        playTitle.setText(DBA.getPlayByID(playid).getTitle());
-
-        //remove
-        Toast.makeText(getApplicationContext(), "Play ID: " + playid, Toast.LENGTH_LONG).show();
-
+        playid = in.getIntExtra("PLAY_ID", 0);
+        setTitle(DBA.getPlayByID(playid).getTitle());
 
         rvCharacter = (RecyclerView) findViewById(R.id.RVCharacter);
         LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());

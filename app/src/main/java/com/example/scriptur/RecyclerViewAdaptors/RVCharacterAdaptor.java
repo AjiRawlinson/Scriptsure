@@ -1,4 +1,4 @@
-package com.example.scriptur;
+package com.example.scriptur.RecyclerViewAdaptors;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.scriptur.Database.Character;
+import com.example.scriptur.R;
 
 import java.util.ArrayList;
 
