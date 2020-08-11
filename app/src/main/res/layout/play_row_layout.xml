@@ -2,24 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:layout_marginBottom="10px">
 
     <ImageView
         android:id="@+id/ivPlayRow"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
         android:src="@drawable/script"/>
 
     <TextView
         android:id="@+id/tvPlayRow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:textSize="42sp"
+        android:textSize="24sp"
+        android:typeface="monospace"
+        android:singleLine="true"
         android:layout_weight="1"
         android:text="Play Title" />
 

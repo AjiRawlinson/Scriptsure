@@ -4,43 +4,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewSceneActivity">
+    tools:context=".UpdateCharacterActivity">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
+        android:orientation = "vertical"
+        android:layout_width = "match_parent"
+        android:layout_height = "match_parent"
+        android:gravity = "center_horizontal"
         >
 
         <EditText
-            android:id="@+id/etSceneName"
+            android:id="@+id/etUpdateCharacterName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
             android:ems="15"
             android:inputType="textPersonName"
-            android:hint="Scene Name"
+            android:hint="Character Name"
             tools:layout_editor_absoluteX="79dp"
             tools:layout_editor_absoluteY="101dp" />
 
-        <ListView
-            android:id="@+id/lvCharacters"
-            android:layout_width="wrap_content"
+        <Spinner
+            android:id="@+id/spinnerUpdateGender"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:choiceMode="multipleChoice"
-            >
-        </ListView>
+            android:layout_marginTop="50dp"
+            android:spinnerMode="dropdown"/>
+
+        <Switch
+            android:id="@+id/switchUpdateUserRole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="I'm playing this character" />
 
         <Button
-            android:id="@+id/btn_Scene_Colour"
+            android:id="@+id/btn_Update_Character_Colour"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="Click To Pick Random Colour"
-            android:onClick="setSceneColourBtn"
+            android:onClick="updateCharacterColourBtn"
             android:paddingTop="5px"
             android:paddingBottom="5px"
             tools:layout_editor_absoluteX="137dp"
@@ -54,17 +58,17 @@
             >
 
             <Button
-                android:id="@+id/btn_Save_Scene"
+                android:id="@+id/btn_Update_Character"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal|center_vertical"
                 android:layout_margin="10px"
                 android:background="@color/colorAccent"
-                android:text="Save Scene"
-                android:onClick="saveSceneBtn"
+                android:text="Save Character"
+                android:onClick="updateCharacterBtn"
                 tools:layout_editor_absoluteX="137dp"
                 tools:layout_editor_absoluteY="197dp" />
+
         </LinearLayout>
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

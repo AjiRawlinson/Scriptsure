@@ -4,20 +4,18 @@ import com.example.scriptur.Database.Play;
 
 public class Scene {
 
-    private int UID;
-    private String name;
+    private int UID, order;
+    private String name, colour;
     private Play play;
-    private int order;
-//    private ArrayList<Line> lines;
-//    private ArrayList<Character> characters;
 
     public Scene() {
 
     }
 
-    public Scene (int id, String name, Play play, int order) {
+    public Scene (int id, String name, String colour, Play play, int order) {
         this.UID = id;
         this.name = name;
+        this.colour = colour;
         this.play = play;
         this.order = order;
     }
@@ -36,6 +34,14 @@ public class Scene {
 
     public void setUID(int UID) {
         this.UID = UID;
+    }
+
+    public String getColour() {
+        return colour;
+    }
+
+    public void setColour(String colour) {
+        this.colour = colour;
     }
 
     public Play getPlay() {

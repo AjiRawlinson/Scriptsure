@@ -4,37 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewPlayActivity">
+    tools:context=".UpdateLineActivity">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
+        android:orientation = "vertical"
+        android:layout_width = "match_parent"
+        android:layout_height = "match_parent"
+        android:gravity = "center_horizontal"
         >
 
-    <EditText
-        android:id="@+id/et_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:ems="15"
-        android:inputType="textPersonName"
-        android:hint="Title"
-        tools:layout_editor_absoluteX="79dp"
-        tools:layout_editor_absoluteY="101dp" />
-
-        <Button
-            android:id="@+id/btn_Play_Colour"
+        <Spinner
+            android:id="@+id/spinnerUpdateCharacters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:spinnerMode="dropdown"/>
+
+        <EditText
+            android:id="@+id/etUpdateLineDialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Click To Pick Random Colour"
-            android:onClick="setPlayColourBtn"
-            android:paddingTop="5px"
-            android:paddingBottom="5px"
-            tools:layout_editor_absoluteX="137dp"
-            tools:layout_editor_absoluteY="197dp" />
+            android:ems="15"
+            android:inputType="textMultiLine"
+            android:scrollHorizontally="false"
+            android:hint="Dialog..."
+            android:lines="4"
+            tools:layout_editor_absoluteX="79dp"
+            tools:layout_editor_absoluteY="101dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,19 +41,17 @@
             >
 
             <Button
-                android:id="@+id/btn_Save_Title"
+                android:id="@+id/btn_Update_Line"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal|center_vertical"
-                android:text="Save Play to Library"
                 android:layout_margin="10px"
-                android:paddingTop="5px"
-                android:paddingBottom="5px"
                 android:background="@color/colorAccent"
-                android:onClick="saveTitleBtn"
+                android:text="Save Line"
+                android:onClick="updateLineBtn"
                 tools:layout_editor_absoluteX="137dp"
                 tools:layout_editor_absoluteY="197dp" />
         </LinearLayout>
-
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,20 +6,18 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.scriptur.Database.Character;
 import com.example.scriptur.Database.DBAdaptor;
 
-public class NewCharacterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-
+public class UpdateCharacterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     DBAdaptor DBA;
     EditText name;
@@ -30,42 +28,58 @@ public class NewCharacterActivity extends AppCompatActivity implements AdapterVi
     String gender, colour;
     boolean userRole;
     int playid;
-
+    Character character;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_character);
-        setTitle("New Character");
+        setContentView(R.layout.activity_update_character);
+        setTitle("Update Character");
 
         DBA = new DBAdaptor(this);
-        name = (EditText) findViewById(R.id.etCharacterName);
-        genderSpinner = (Spinner) findViewById(R.id.genderSpinner);
-        userRoleSwitch = (Switch) findViewById(R.id.userRoleSwitch);
-        colourBtn = (Button) findViewById(R.id.btn_Character_Colour);
-        Colours colours = new Colours();
-        colour = colours.randomColour();
-        colourBtn.setBackgroundColor(Color.parseColor(colour));
-        gender = "unisex";
+        name = (EditText) findViewById(R.id.etUpdateCharacterName);
+        genderSpinner = (Spinner) findViewById(R.id.spinnerUpdateGender);
+        userRoleSwitch = (Switch) findViewById(R.id.switchUpdateUserRole);
+        colourBtn = (Button) findViewById(R.id.btn_Update_Character_Colour);
 
         Intent in = getIntent();
-        playid = in.getIntExtra("PLAY_ID", 0);
+        int characterID = in.getIntExtra("CHARACTER_ID", 1);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(NewCharacterActivity.this, android.R.layout.simple_spinner_dropdown_item, genderList);
+        character = DBA.getCharacterByID(characterID);
+        name.setText(character.getName());
+        colour = character.getColour();
+        gender = character.getGender();
+        colourBtn.setBackgroundColor(Color.parseColor(colour));
+        playid = character.getPlay().getUID();
+        if(character.isUserPart()) {userRoleSwitch.setChecked(true); }
+        else { userRoleSwitch.setChecked(false); }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(UpdateCharacterActivity.this, android.R.layout.simple_spinner_dropdown_item, genderList);
         genderSpinner.setAdapter(adapter);
         genderSpinner.setOnItemSelectedListener(this);
+        int spinnerIndex = 0;
+        for(int i = 0; i < genderList.length; i++) {
+            if(character.getGender().equalsIgnoreCase(genderList[i])) { spinnerIndex = i; }
+        }
+        genderSpinner.setSelection(spinnerIndex);
+
+
     }
 
-    public void setCharacterColourBtn(View v) {
+    public void updateCharacterColourBtn(View v) {
         Colours colours = new Colours();
         colour = colours.randomColour();
         colourBtn.setBackgroundColor(Color.parseColor(colour));
     }
 
-    public void saveCharacterBtn(View v) {
+    public void updateCharacterBtn(View v) {
         if(userRoleSwitch.isChecked()) { userRole = true; }
         else{ userRole = false; }
-        DBA.insertCharacter(name.getText().toString(), gender, userRole, colour, playid);
+        character.setName(name.getText().toString());
+        character.setColour(colour);
+        character.setGender(gender);
+        character.setUserPart(userRole);
+        DBA.updateCharacter(character);
 
         Intent in = new Intent(this, Character_List_Activity.class);
         in.putExtra("PLAY_ID", playid);
@@ -84,14 +98,15 @@ public class NewCharacterActivity extends AppCompatActivity implements AdapterVi
             case 2:
                 gender = genderList[2].toLowerCase();
                 break;
-              default:
-                  gender = "unisex";
+            default:
+                gender = "unisex";
         }
 
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        gender = "unisex";
+        gender = character.getGender();
     }
 }
+

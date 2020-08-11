@@ -1,6 +1,7 @@
 package com.example.scriptur.RecyclerViewAdaptors;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ public class RVAdaptorPlay extends RecyclerView.Adapter<RVAdaptorPlay.RVHolderPl
     @Override
     public void onBindViewHolder(@NonNull RVHolderPlay holder, int position) {
         holder.title.setText(playList.get(position).getTitle());
+        holder.itemView.setBackgroundColor(Color.parseColor(playList.get(position).getColour()));
     }
 
     @Override
@@ -51,7 +53,7 @@ public class RVAdaptorPlay extends RecyclerView.Adapter<RVAdaptorPlay.RVHolderPl
      **********************************************************************************************************************/
 
 
-    public class RVHolderPlay extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class RVHolderPlay extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         TextView title;
         OnRowListener rowListener;
 
@@ -61,6 +63,7 @@ public class RVAdaptorPlay extends RecyclerView.Adapter<RVAdaptorPlay.RVHolderPl
             this.rowListener = rowListener;
 
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
 
@@ -68,9 +71,16 @@ public class RVAdaptorPlay extends RecyclerView.Adapter<RVAdaptorPlay.RVHolderPl
         public void onClick(View v) {
             rowListener.onRowClick(getAdapterPosition());
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            rowListener.onRowLongClick(getAdapterPosition(), v);
+            return true;
+        }
     }
 
     public interface OnRowListener {
         void onRowClick(int position);
+        void onRowLongClick(int position, View v);
     }
 }

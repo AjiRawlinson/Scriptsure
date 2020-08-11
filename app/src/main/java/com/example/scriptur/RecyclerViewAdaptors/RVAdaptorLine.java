@@ -1,9 +1,11 @@
 package com.example.scriptur.RecyclerViewAdaptors;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,17 +20,19 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
 
     Context context;
     ArrayList<Line> lines;
+    OnRowListener rowListener;
 
-    public RVAdaptorLine(Context context, ArrayList<Line> lines) {
+    public RVAdaptorLine(Context context, ArrayList<Line> lines, OnRowListener rowListener) {
         this.context = context;
         this.lines = lines;
+        this.rowListener = rowListener;
     }
 
     @NonNull
     @Override
     public RVHolderLine onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.line_row_layout, parent, false);
-        RVHolderLine rvHolderLine = new RVHolderLine(view);
+        RVHolderLine rvHolderLine = new RVHolderLine(view, rowListener);
         return rvHolderLine;
     }
 
@@ -36,6 +40,12 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
     public void onBindViewHolder(@NonNull RVHolderLine holder, int position) {
         holder.CharacterName.setText(lines.get(position).getCharacter().getName());
         holder.dialog.setText(lines.get(position).getDialog());
+        holder.itemView.setBackgroundColor(Color.parseColor(lines.get(position).getCharacter().getColour()));
+        if(lines.get(position).getCharacter().getGender().equalsIgnoreCase("male")) {
+            holder.image.setImageResource(R.drawable.male_actor);
+        } else if(lines.get(position).getCharacter().getGender().equalsIgnoreCase("female")) {
+            holder.image.setImageResource(R.drawable.female_actor);
+        } else { holder.image.setImageResource(R.drawable.unisex_actor); }
     }
 
     @Override
@@ -48,14 +58,31 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
      *                                  R E C Y C L E V I E W   H O L D E R
      **********************************************************************************************************************/
 
-    public class RVHolderLine extends RecyclerView.ViewHolder {
+    public class RVHolderLine extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         TextView CharacterName;
         TextView dialog;
+        ImageView image;
+        OnRowListener rowListener;
 
-        public RVHolderLine(@NonNull View itemView) {
+        public RVHolderLine(@NonNull View itemView, OnRowListener rowListener) {
             super(itemView);
             this.CharacterName = (TextView) itemView.findViewById(R.id.tvLineCharacterRow);
             this.dialog = (TextView) itemView.findViewById(R.id.tvLineDialogRow);
+            this.image = (ImageView) itemView.findViewById(R.id.ivLineRow);
+            this.rowListener = rowListener;
+
+            itemView.setOnLongClickListener(this);
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            rowListener.onRowLongClick(getAdapterPosition(), v);
+            return true;
+        }
+    }
+
+    public interface OnRowListener {
+//        void OnRowClick(int position) // maybe to reveal user line
+        void onRowLongClick(int position, View v);
     }
 }

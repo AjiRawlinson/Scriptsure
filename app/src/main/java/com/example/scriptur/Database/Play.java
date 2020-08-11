@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Play {
 
-    private String title;
+    private String title, colour;
     private int UID;
 //    ArrayList<Scene> scenes;
 //    ArrayList<Character> characters;
@@ -12,13 +12,15 @@ public class Play {
     public Play() {
     }
 
-    public Play(String title) {
+    public Play(String title, String colour) {
         this.title = title;
+        this.colour = colour;
     }
 
-    public Play(int id, String title) {
+    public Play(int id, String title, String colour) {
         this.UID = id;
         this.title = title;
+        this.colour = colour;
     }
 
     public String getTitle() {
@@ -27,6 +29,14 @@ public class Play {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getColour() {
+        return colour;
+    }
+
+    public void setColour(String colour) {
+        this.colour = colour;
     }
 
     public int getUID() {

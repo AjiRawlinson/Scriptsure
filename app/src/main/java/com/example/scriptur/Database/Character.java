@@ -2,21 +2,29 @@ package com.example.scriptur.Database;
 
 public class Character {
 
-    private String name;
+    private String name, gender, colour;
     private int UID;
-    private Play play;
-    private String gender;
     private boolean userPart;
+    private Play play;
 
     public Character() { }
 
-    public Character(int id, String name, String gender, boolean userPart, Play play) {
+    public Character(int id, String name, String gender, boolean userPart, String colour, Play play) {
         this.UID = id;
         this.name = name;
-        this.play = play;
         this.userPart = userPart;
         this.gender = gender;
-        this.userPart = false;
+        this.colour = colour;
+        this.play = play;
+    }
+
+
+    public int getUID() {
+        return UID;
+    }
+
+    public void setUID(int UID) {
+        this.UID = UID;
     }
 
     public String getName() {
@@ -25,14 +33,6 @@ public class Character {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Play getPlay() {
-        return play;
-    }
-
-    public void setPlay(Play play) {
-        this.play = play;
     }
 
     public String getGender() {
@@ -59,11 +59,19 @@ public class Character {
         this.userPart = userPart;
     }
 
-    public int getUID() {
-        return UID;
+    public String getColour() {
+        return colour;
     }
 
-    public void setUID(int UID) {
-        this.UID = UID;
+    public void setColour(String colour) {
+        this.colour = colour;
+    }
+
+    public Play getPlay() {
+        return play;
+    }
+
+    public void setPlay(Play play) {
+        this.play = play;
     }
 }

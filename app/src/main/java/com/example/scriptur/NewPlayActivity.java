@@ -45,7 +45,7 @@ public class NewPlayActivity extends AppCompatActivity {
 
     public void saveTitleBtn(View v) {
     //TODO Make sure titles are unique
-        DBA.insertPlay(title.getText().toString().trim());
+        DBA.insertPlay(title.getText().toString().trim(), colour);
         Play play = DBA.getPlayByTitle(title.getText().toString());
 
         Intent in = new Intent(this, NewCharacterActivity.class);

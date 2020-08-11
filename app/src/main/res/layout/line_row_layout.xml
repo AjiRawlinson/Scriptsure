@@ -2,31 +2,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_gravity="center_horizontal">
+    android:orientation="horizontal"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginBottom="10px">
+    
+    <ImageView
+        android:id="@+id/ivLineRow"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/unisex_actor"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
     <TextView
         android:id="@+id/tvLineCharacterRow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:textSize="26sp"
-        android:layout_weight="1"
+        android:textSize="18sp"
         android:text="Character Name"
         android:textStyle="bold"
+        android:typeface="monospace"
         android:layout_gravity="center_horizontal" />
 
     <TextView
         android:id="@+id/tvLineDialogRow"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:textSize="22sp"
-        android:layout_weight="1"
+        android:layout_marginLeft="5dp"
+        android:textSize="18sp"
+        android:typeface="monospace"
         android:text="Dialog..." />
 
+</LinearLayout>
 
 
 
