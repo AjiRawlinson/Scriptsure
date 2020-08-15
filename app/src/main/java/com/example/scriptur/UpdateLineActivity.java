@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.scriptur.Database.Character;
 import com.example.scriptur.Database.DBAdaptor;
@@ -38,20 +40,27 @@ public class UpdateLineActivity extends AppCompatActivity implements AdapterView
         Intent in = getIntent();
         int lineID = in.getIntExtra("LINE_ID", 1);
         line = DBA.getLineByID(lineID);
+        sceneID = line.getScene().getUID();
+        characterID = line.getCharacter().getUID();
         etDialog.setText(line.getDialog());
         characterList = DBA.getCharactersBySceneID(sceneID);
         String[] characterNamesList = new String[characterList.size()];
         for(int i = 0; i < characterNamesList.length; i++) {
             characterNamesList[i] = characterList.get(i).getName();
         }
+        Log.v("TAG", "Before.");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(UpdateLineActivity.this, android.R.layout.simple_spinner_dropdown_item, characterNamesList);
         characterSpinner.setAdapter(adapter);
         characterSpinner.setOnItemSelectedListener(this);
-        int spinnerIndex = 0;
+
+        Log.v("TAG", "After.");
+        Log.v("TAG", characterNamesList[0]);
+        int spinnerIndex = -1;
         for(int i = 0; i < characterNamesList.length; i++) {
             if(line.getCharacter().getName().equalsIgnoreCase(characterNamesList[i])) { spinnerIndex = i; }
         }
+        Toast.makeText(UpdateLineActivity.this, "Index: " + spinnerIndex, Toast.LENGTH_LONG);
         characterSpinner.setSelection(spinnerIndex);
     }
 

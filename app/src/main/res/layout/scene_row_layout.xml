@@ -10,17 +10,38 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_margin="5dp"
+        android:layout_gravity="center_vertical"
         android:src="@drawable/skull"
         />
 
-    <TextView
-        android:id="@+id/tvSceneRow"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:singleLine="true"
-        android:textSize="24sp"
-        android:typeface="monospace"
-        android:layout_weight="1"
-        android:text="Scene Name" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvSceneRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:singleLine="true"
+            android:textSize="28sp"
+            android:typeface="monospace"
+            android:layout_weight="4"
+            android:text="Scene Name" />
+
+        <TextView
+            android:id="@+id/tvSceneRowData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginRight="10dp"
+            android:singleLine="true"
+            android:textSize="12sp"
+            android:typeface="monospace"
+            android:layout_weight="1"
+            android:layout_gravity="right"
+            android:text="User lines: 0/0 Average Score: N/A" />
+
+    </LinearLayout>
 </LinearLayout>

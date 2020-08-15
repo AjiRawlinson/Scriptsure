@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.scriptur.Database.DBAdaptor;
 import com.example.scriptur.Database.Play;
+import com.example.scriptur.Database.Scene;
 import com.example.scriptur.RecyclerViewAdaptors.RVAdaptorPlay;
 
 import java.util.ArrayList;
@@ -35,12 +36,18 @@ public class Play_List_Activity extends AppCompatActivity implements RVAdaptorPl
 
         DBA = new DBAdaptor(this);
         playList = DBA.getAllPlays();
+        ArrayList<Scene> sceneList = DBA.getAllScenes();
 
         rvPlay = (RecyclerView) findViewById(R.id.RVPlay);
         LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
         rvPlay.setLayoutManager(llm);
-        RVAPlay = new RVAdaptorPlay(this, playList, this);
+        RVAPlay = new RVAdaptorPlay(this, playList, sceneList, this);
         rvPlay.setAdapter(RVAPlay);
+    }
+
+    public void newPlayBtn(View v) {
+        Intent in = new Intent(this, NewPlayActivity.class);
+        startActivity(in);
     }
 
     @Override

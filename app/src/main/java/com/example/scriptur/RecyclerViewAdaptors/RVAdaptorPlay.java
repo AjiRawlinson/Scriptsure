@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.scriptur.Database.Play;
+import com.example.scriptur.Database.Scene;
 import com.example.scriptur.R;
 
 import java.util.ArrayList;
@@ -20,11 +21,13 @@ public class RVAdaptorPlay extends RecyclerView.Adapter<RVAdaptorPlay.RVHolderPl
 
     Context context;
     ArrayList<Play> playList;
+    ArrayList<Scene> sceneList;
     OnRowListener rowListener;
 
-    public RVAdaptorPlay(Context context, ArrayList<Play> playList, OnRowListener rowListener) {
+    public RVAdaptorPlay(Context context, ArrayList<Play> playList, ArrayList<Scene> sceneList, OnRowListener rowListener) {
         this.context = context;
         this.playList = playList;
+        this.sceneList = sceneList;
         this.rowListener = rowListener;
     }
 
@@ -39,6 +42,11 @@ public class RVAdaptorPlay extends RecyclerView.Adapter<RVAdaptorPlay.RVHolderPl
     @Override
     public void onBindViewHolder(@NonNull RVHolderPlay holder, int position) {
         holder.title.setText(playList.get(position).getTitle());
+        int numOfScene = 0;
+        for(Scene scene: sceneList) {
+            if(scene.getPlay().getUID() == playList.get(position).getUID()) { numOfScene++; }
+        }
+        holder.playData.setText("Scenes: " + numOfScene);
         holder.itemView.setBackgroundColor(Color.parseColor(playList.get(position).getColour()));
     }
 
@@ -55,11 +63,13 @@ public class RVAdaptorPlay extends RecyclerView.Adapter<RVAdaptorPlay.RVHolderPl
 
     public class RVHolderPlay extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         TextView title;
+        TextView playData;
         OnRowListener rowListener;
 
         public RVHolderPlay(@NonNull View itemView, OnRowListener rowListener) {
             super(itemView);
             this.title = (TextView) itemView.findViewById(R.id.tvPlayRow);
+            this.playData = (TextView) itemView.findViewById(R.id.tvPlayDataRow);
             this.rowListener = rowListener;
 
             itemView.setOnClickListener(this);

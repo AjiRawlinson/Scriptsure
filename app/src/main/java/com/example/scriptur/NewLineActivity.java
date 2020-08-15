@@ -37,12 +37,11 @@ public class NewLineActivity extends AppCompatActivity implements AdapterView.On
         DBA = new DBAdaptor(this);
         etDialog = (EditText) findViewById(R.id.etLineDialog);
         characterSpinner = (Spinner) findViewById(R.id.SpinnerCharacters);
-        order = DBA.getNumberOfLinesInScene(sceneID);
         characterID = 0;
 
         Intent in = getIntent();
         sceneID = in.getIntExtra("SCENE_ID", 1);
-
+        order = DBA.getNumberOfLinesInScene(sceneID);
         characterList = DBA.getCharactersBySceneID(sceneID);
         String[] characterNamesList = new String[characterList.size()];
         for(int i = 0; i < characterNamesList.length; i++) {

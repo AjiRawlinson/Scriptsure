@@ -13,6 +13,7 @@
         android:gravity = "top"
         android:layout_marginTop="10px"
         android:layout_weight = "1"
+        android:paddingBottom="200px"
         >
 
         <androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
+            android:scrollbars="vertical"
             tools:layout_editor_absoluteX="1dp"
             tools:layout_editor_absoluteY="1dp" />
 
@@ -29,16 +31,6 @@
             android:orientation="horizontal"
             android:gravity="center_horizontal">
 
-
-            <Button
-                android:id="@+id/btn_Another_Character"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="Add New Character"
-                android:onClick="addCharacterBtn"
-                tools:layout_editor_absoluteX="137dp"
-                tools:layout_editor_absoluteY="197dp" />
 
             <Button
                 android:id="@+id/btn_View_Scenes"
@@ -51,6 +43,27 @@
                 tools:layout_editor_absoluteY="197dp" />
 
     </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="bottom|right"
+        android:paddingBottom="15px"
+        android:paddingRight="15px">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fBtNewCharacter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:clickable="true"
+            android:onClick="newCharacterBtn"
+            app:srcCompat="@android:drawable/ic_input_add" />
+
+
     </LinearLayout>
 
 

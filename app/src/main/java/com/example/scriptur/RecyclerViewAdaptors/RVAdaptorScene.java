@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.scriptur.Database.Line;
 import com.example.scriptur.Database.Scene;
 import com.example.scriptur.R;
 
@@ -20,12 +21,22 @@ public class RVAdaptorScene extends RecyclerView.Adapter<RVAdaptorScene.RVHolder
 
     Context context;
     ArrayList<Scene> sceneList;
+    ArrayList<Line> lineList;
     OnRowListener rowListener;
+    int lineNum, userLineNum, avgScore;
 
-    public RVAdaptorScene(Context context, ArrayList<Scene> scenes, OnRowListener rowListener) {
+    public RVAdaptorScene(Context context, ArrayList<Scene> scenes, ArrayList<Line> lines, OnRowListener rowListener) {
         this.context = context;
         this.sceneList = scenes;
+        this.lineList = lines;
         this.rowListener = rowListener;
+        this.lineNum = lineList.size();
+        this.userLineNum = 0;
+        this.avgScore = -1;
+        for(Line line: lineList) {
+            if(line.getCharacter().isUserPart()) { userLineNum++; }
+            if(line.getScore() >= 0) { avgScore += line.getScore(); }
+        }
     }
 
     @NonNull
@@ -39,6 +50,11 @@ public class RVAdaptorScene extends RecyclerView.Adapter<RVAdaptorScene.RVHolder
     @Override
     public void onBindViewHolder(@NonNull RVHolderScene holder, int position) {
         holder.name.setText(sceneList.get(position).getName());
+        if(userLineNum != 0) {//THOU MUST NOT DIVIDE BY ZERO
+            avgScore = (avgScore + 1) / userLineNum; //plus one to get rid of the default -1 inn
+        }
+        if(avgScore >= 0) { holder.data.setText("User Lines: " + userLineNum + "/" + lineList.size() + " Average Score: " + avgScore); }
+        else { holder.data.setText("User Lines: " + userLineNum + "/" + lineList.size() + " Average Score: N/A"); }
         holder.itemView.setBackgroundColor(Color.parseColor(sceneList.get(position).getColour()));
     }
 
@@ -53,13 +69,14 @@ public class RVAdaptorScene extends RecyclerView.Adapter<RVAdaptorScene.RVHolder
 
 
     public class RVHolderScene extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        TextView name;
+        TextView name, data;
         ImageView image;
         OnRowListener rowListener;
 
         public RVHolderScene(@NonNull View itemView, OnRowListener rowListener) {
             super(itemView);
             this.name = (TextView) itemView.findViewById(R.id.tvSceneRow);
+            this.data = (TextView) itemView.findViewById(R.id.tvSceneRowData);
             this.image = (ImageView) itemView.findViewById(R.id.ivSceneRow);
             this.rowListener = rowListener;
 

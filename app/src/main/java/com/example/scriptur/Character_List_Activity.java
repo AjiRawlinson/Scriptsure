@@ -11,12 +11,14 @@ import android.net.wifi.aware.Characteristics;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.scriptur.Database.Character;
 import com.example.scriptur.Database.DBAdaptor;
+import com.example.scriptur.Database.Line;
 import com.example.scriptur.RecyclerViewAdaptors.RVAdaptorCharacter;
 
 import java.util.ArrayList;
@@ -45,11 +47,12 @@ public class Character_List_Activity extends AppCompatActivity implements RVAdap
         rvCharacter.setLayoutManager(llm);
         DBAdaptor DBA = new DBAdaptor(this);
         characterList = DBA.getAllCharactersInPlay(playid);
-        RVACharacter = new RVAdaptorCharacter(this, characterList, this);
+        ArrayList<Line> lineList = DBA.getAllLines();
+        RVACharacter = new RVAdaptorCharacter(this, characterList, lineList, this);
         rvCharacter.setAdapter(RVACharacter);
     }
 
-    public void addCharacterBtn(View v) {
+    public void newCharacterBtn(View v) {
         Intent in = new Intent(this, NewCharacterActivity.class);
         in.putExtra("PLAY_ID", playid);
         startActivity(in);

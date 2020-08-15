@@ -14,6 +14,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.example.scriptur.Database.DBAdaptor;
+import com.example.scriptur.Database.Line;
 import com.example.scriptur.Database.Scene;
 import com.example.scriptur.RecyclerViewAdaptors.RVAdaptorScene;
 
@@ -40,12 +41,16 @@ public class Scene_List_Activity extends AppCompatActivity implements RVAdaptorS
         rvScene = (RecyclerView) findViewById(R.id.RVScene);
         LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
         rvScene.setLayoutManager(llm);
-        sceneList = DBA.getAllScenesInPlay(playid); //change to scenes
-        RVAScene = new RVAdaptorScene(this, sceneList, this);
+        sceneList = DBA.getAllScenesInPlay(playid);
+        ArrayList<Line> lineList = new ArrayList<>();
+        for(Scene scene: sceneList) {
+            lineList.addAll(DBA.getAllLinesInScene(scene.getUID()));
+        }
+        RVAScene = new RVAdaptorScene(this, sceneList, lineList, this);
         rvScene.setAdapter(RVAScene);
     }
 
-    public void addSceneBtn(View v) {
+    public void newSceneBtn(View v) {
         Intent in = new Intent(this, NewSceneActivity.class);
         in.putExtra("PLAY_ID", playid);
         startActivity(in);

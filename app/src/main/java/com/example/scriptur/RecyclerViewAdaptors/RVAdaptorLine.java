@@ -41,11 +41,16 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
         holder.CharacterName.setText(lines.get(position).getCharacter().getName());
         holder.dialog.setText(lines.get(position).getDialog());
         holder.itemView.setBackgroundColor(Color.parseColor(lines.get(position).getCharacter().getColour()));
+        if(lines.get(position).getCharacter().isUserPart()) {
+            if(lines.get(position).getScore() >= 0) { holder.data.setText("Last Score: " +lines.get(position).getScore()); }
+            else { holder.data.setText("Last Score: N/A"); }
+            holder.starImage.setImageResource(android.R.drawable.star_on);
+        }
         if(lines.get(position).getCharacter().getGender().equalsIgnoreCase("male")) {
-            holder.image.setImageResource(R.drawable.male_actor);
+            holder.genderImage.setImageResource(R.drawable.male_actor);
         } else if(lines.get(position).getCharacter().getGender().equalsIgnoreCase("female")) {
-            holder.image.setImageResource(R.drawable.female_actor);
-        } else { holder.image.setImageResource(R.drawable.unisex_actor); }
+            holder.genderImage.setImageResource(R.drawable.female_actor);
+        } else { holder.genderImage.setImageResource(R.drawable.unisex_actor); }
     }
 
     @Override
@@ -61,14 +66,19 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
     public class RVHolderLine extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         TextView CharacterName;
         TextView dialog;
-        ImageView image;
+        TextView data;
+        ImageView genderImage;
+        ImageView starImage;
         OnRowListener rowListener;
 
         public RVHolderLine(@NonNull View itemView, OnRowListener rowListener) {
             super(itemView);
             this.CharacterName = (TextView) itemView.findViewById(R.id.tvLineCharacterRow);
             this.dialog = (TextView) itemView.findViewById(R.id.tvLineDialogRow);
-            this.image = (ImageView) itemView.findViewById(R.id.ivLineRow);
+            this.data = (TextView) itemView.findViewById(R.id.tvLineRowData);
+            this.genderImage = (ImageView) itemView.findViewById(R.id.ivLineRow);
+            this.starImage = (ImageView) itemView.findViewById(R.id.ivUserLineRow1);
+
             this.rowListener = rowListener;
 
             itemView.setOnLongClickListener(this);

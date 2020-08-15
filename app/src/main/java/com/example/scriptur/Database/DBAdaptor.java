@@ -326,30 +326,17 @@ public class DBAdaptor {
         cv.put(myHelper.LINE_DIALOG, dialog);
         cv.put(myHelper.LINE_SCENE_ID_FK, sceneID);
         cv.put(myHelper.LINE_ORDER, order);
+        cv.put(myHelper.LINE_SCORE, -1);
         long id = DB.insert(myHelper.LINE_TABLE_NAME,null, cv);
         return id;
     }
 
-    public ArrayList<Line> getAllLinesInScene(int sceneID) {
-        ArrayList<Line> lineList = new ArrayList<>();
-        SQLiteDatabase DB = myHelper.getReadableDatabase();
-        String[] columns = {myHelper.LINE_ID, myHelper.LINE_CHARACTER_ID_FK, myHelper.LINE_DIALOG, myHelper.LINE_SCENE_ID_FK, myHelper.LINE_ORDER};
-        Cursor cursor = DB.query(myHelper.LINE_TABLE_NAME, columns, "" + myHelper.LINE_SCENE_ID_FK + " =?", new String[] {"" + sceneID}, null, null, myHelper.LINE_ORDER + " ASC");
-        while(cursor.moveToNext()) {
-            int id = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_ID));
-            int characterID = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_CHARACTER_ID_FK));
-            String dialog = cursor.getString(cursor.getColumnIndex(myHelper.LINE_DIALOG));
-            int order = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_ORDER));
-            Line line = new Line(id, getCharacterByID(characterID), dialog, getSceneByID(sceneID), order);
-            lineList.add(line);
-        }
-        return lineList;
-    }
+
 
     public ArrayList<Line> getAllLines() {
         ArrayList<Line> lineList = new ArrayList<>();
         SQLiteDatabase DB = myHelper.getReadableDatabase();
-        String[] columns = {myHelper.LINE_ID, myHelper.LINE_CHARACTER_ID_FK, myHelper.LINE_DIALOG, myHelper.LINE_SCENE_ID_FK, myHelper.LINE_ORDER};
+        String[] columns = {myHelper.LINE_ID, myHelper.LINE_CHARACTER_ID_FK, myHelper.LINE_DIALOG, myHelper.LINE_SCENE_ID_FK, myHelper.LINE_ORDER, myHelper.LINE_SCORE};
         Cursor cursor = DB.query(myHelper.LINE_TABLE_NAME, columns, null, null, null, null, myHelper.LINE_ORDER + " ASC");
         while(cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_ID));
@@ -357,7 +344,25 @@ public class DBAdaptor {
             String dialog = cursor.getString(cursor.getColumnIndex(myHelper.LINE_DIALOG));
             int sceneID = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_SCENE_ID_FK));
             int order = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_ORDER));
-            Line line = new Line(id, getCharacterByID(characterID), dialog, getSceneByID(sceneID), order);
+            int score = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_SCORE));
+            Line line = new Line(id, getCharacterByID(characterID), dialog, getSceneByID(sceneID), order, score);
+            lineList.add(line);
+        }
+        return lineList;
+    }
+
+    public ArrayList<Line> getAllLinesInScene(int sceneID) {
+        ArrayList<Line> lineList = new ArrayList<>();
+        SQLiteDatabase DB = myHelper.getReadableDatabase();
+        String[] columns = {myHelper.LINE_ID, myHelper.LINE_CHARACTER_ID_FK, myHelper.LINE_DIALOG, myHelper.LINE_SCENE_ID_FK, myHelper.LINE_ORDER, myHelper.LINE_SCORE};
+        Cursor cursor = DB.query(myHelper.LINE_TABLE_NAME, columns, "" + myHelper.LINE_SCENE_ID_FK + " =?", new String[] {"" + sceneID}, null, null, myHelper.LINE_ORDER + " ASC");
+        while(cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_ID));
+            int characterID = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_CHARACTER_ID_FK));
+            String dialog = cursor.getString(cursor.getColumnIndex(myHelper.LINE_DIALOG));
+            int order = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_ORDER));
+            int score = cursor.getInt(cursor.getColumnIndex(myHelper.LINE_SCORE));
+            Line line = new Line(id, getCharacterByID(characterID), dialog, getSceneByID(sceneID), order, score);
             lineList.add(line);
         }
         return lineList;
@@ -375,6 +380,7 @@ public class DBAdaptor {
         ContentValues cv = new ContentValues();
         cv.put(myHelper.LINE_CHARACTER_ID_FK, line.getCharacter().getUID());
         cv.put(myHelper.LINE_DIALOG, line.getDialog());
+        cv.put(myHelper.LINE_SCORE, line.getScore());
         DB.update(myHelper.LINE_TABLE_NAME, cv, myHelper.LINE_ID + " =?", UID);
 
     }
@@ -490,12 +496,14 @@ public class DBAdaptor {
         private static final String LINE_SCENE_ID_FK = "scene_id";
         private static final String LINE_DIALOG = "dialog";
         private static final String LINE_ORDER = "line_order";
+        private static final String LINE_SCORE = "line_score";
         private static final String CREATE_LINE_TABLE = "CREATE TABLE " + LINE_TABLE_NAME + " (" +
                                                             LINE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                                                             LINE_CHARACTER_ID_FK + " INTEGER, " +
                                                             LINE_DIALOG + " TEXT, " +
                                                             LINE_SCENE_ID_FK + " INTEGER, " +
                                                             LINE_ORDER + " INTEGER, " +
+                                                            LINE_SCORE + " INTEGER, " +
                                                             "FOREIGN KEY(" + LINE_CHARACTER_ID_FK + ") REFERENCES " + CHARACTER_TABLE_NAME + "(" + CHARACTER_ID + "), " +
                                                             "FOREIGN KEY(" + LINE_SCENE_ID_FK + ") REFERENCES " + SCENE_TABLE_NAME + "(" + SCENE_ID + "));";
         private static final String DROP_LINE_TABLE = "DROP TABLE IF EXISTS " + LINE_TABLE_NAME;
