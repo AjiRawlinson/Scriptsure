@@ -21,7 +21,7 @@ import com.example.scriptur.RecyclerViewAdaptors.RVAdaptorScene;
 import java.util.ArrayList;
 
 public class Scene_List_Activity extends AppCompatActivity implements RVAdaptorScene.OnRowListener  {
-
+    //TODO Delete along with corresponding xml class
     RecyclerView rvScene;
     ArrayList<Scene> sceneList;
     DBAdaptor DBA;

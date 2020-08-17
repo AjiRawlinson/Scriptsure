@@ -2,18 +2,18 @@ package com.example.scriptur.Database;
 
 public class Character {
 
-    private String name, gender, colour;
+    private String name, avatarCode, colour;
     private int UID;
     private boolean userPart;
     private Play play;
 
     public Character() { }
 
-    public Character(int id, String name, String gender, boolean userPart, String colour, Play play) {
+    public Character(int id, String name, String avatarCode, boolean userPart, String colour, Play play) {
         this.UID = id;
         this.name = name;
         this.userPart = userPart;
-        this.gender = gender;
+        this.avatarCode = avatarCode;
         this.colour = colour;
         this.play = play;
     }
@@ -35,20 +35,20 @@ public class Character {
         this.name = name;
     }
 
-    public String getGender() {
-        return gender;
+    public String getAvatarCode() {
+        return avatarCode;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setAvatarCode(String gender) {
+        this.avatarCode = gender;
     }
 
     public void setFemale() {
-        this.gender = "female";
+        this.avatarCode = "female";
     }
 
     public void setMale() {
-        this.gender = "male";
+        this.avatarCode = "male";
     }
 
     public boolean isUserPart() {

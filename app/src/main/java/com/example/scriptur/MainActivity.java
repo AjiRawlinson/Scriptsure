@@ -20,7 +20,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newPlayBtn(View v) {
-        Intent in = new Intent(this, NewPlayActivity.class);
+        Intent in = new Intent(this, SceneCharacterTabbedActivity.class);
+        in.putExtra("PLAY_ID", 2); //TODO Delete this Mock Data
         startActivity(in);
     }
 }

@@ -54,7 +54,8 @@ public class NewLineActivity extends AppCompatActivity implements AdapterView.On
     }
 
     public void saveLineBtn(View v) {
-        DBA.insertLine(characterID, etDialog.getText().toString(), sceneID, order);
+        String dialogCapitalized = etDialog.getText().toString().trim().substring(0,1).toUpperCase() + etDialog.getText().toString().trim().substring(1) ;
+        DBA.insertLine(characterID, dialogCapitalized, sceneID, order);
 
         Intent in = new Intent(this, Line_List_Activity.class);
         in.putExtra("SCENE_ID", sceneID);
@@ -69,6 +70,13 @@ public class NewLineActivity extends AppCompatActivity implements AdapterView.On
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         characterID = characterList.get(0).getUID();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent in = new Intent(this, Line_List_Activity.class);
+        in.putExtra("SCENE_ID", sceneID);
+        startActivity(in);
     }
 
 }

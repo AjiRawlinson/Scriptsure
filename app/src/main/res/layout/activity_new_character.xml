@@ -24,20 +24,6 @@
             tools:layout_editor_absoluteX="79dp"
             tools:layout_editor_absoluteY="101dp" />
 
-        <Spinner
-            android:id="@+id/genderSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:spinnerMode="dropdown"/>
-
-        <Switch
-            android:id="@+id/userRoleSwitch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:text="I'm playing this character" />
-
         <Button
             android:id="@+id/btn_Character_Colour"
             android:layout_width="match_parent"
@@ -49,6 +35,36 @@
             android:paddingBottom="5px"
             tools:layout_editor_absoluteX="137dp"
             tools:layout_editor_absoluteY="197dp" />
+
+
+        <Switch
+            android:id="@+id/userRoleSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="I'm playing this character" />
+
+        <Spinner
+            android:id="@+id/genderSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:spinnerMode="dialog"/>
+        <Button
+            android:id="@+id/btn_Test_Voice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_margin="10px"
+            android:background="@color/colorAccent"
+            android:text="Listen to avatar voice"
+            android:onClick="testVoice"
+            tools:layout_editor_absoluteX="137dp"
+            tools:layout_editor_absoluteY="197dp" />
+
+
+
+
 
         <LinearLayout
             android:layout_width="match_parent"

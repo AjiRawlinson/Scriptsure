@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Line_List_Activity">
 
-
-<!--    <ScrollView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        tools:ignore="MissingConstraints">-->
     <LinearLayout
         android:id="@+id/LineLinearLayout"
         android:orientation = "vertical"
@@ -21,6 +16,19 @@
         android:layout_weight = "1"
         android:paddingBottom="200px"
         >
+
+        <TextView
+            android:id="@+id/tvLineNoData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            android:singleLine="true"
+            android:textColor="#D3D3D3"
+            android:typeface="monospace"
+            android:visibility="gone"
+            android:gravity="center_horizontal"
+            android:text="No Lines added" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/RVLine"

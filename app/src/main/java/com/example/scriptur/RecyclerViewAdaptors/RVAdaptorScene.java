@@ -34,8 +34,11 @@ public class RVAdaptorScene extends RecyclerView.Adapter<RVAdaptorScene.RVHolder
         this.userLineNum = 0;
         this.avgScore = -1;
         for(Line line: lineList) {
-            if(line.getCharacter().isUserPart()) { userLineNum++; }
-            if(line.getScore() >= 0) { avgScore += line.getScore(); }
+            if(line.getCharacter().isUserPart()) {
+                userLineNum++;
+                if(line.getScore() >= 0) { avgScore += line.getScore(); }
+            }
+
         }
     }
 

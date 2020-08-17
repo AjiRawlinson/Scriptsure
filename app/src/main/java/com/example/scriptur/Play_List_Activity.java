@@ -52,8 +52,9 @@ public class Play_List_Activity extends AppCompatActivity implements RVAdaptorPl
 
     @Override
     public void onRowClick(int position) {
-        Intent in = new Intent(this, Scene_List_Activity.class);
+        Intent in = new Intent(this, SceneCharacterTabbedActivity.class);
         in.putExtra("PLAY_ID", playList.get(position).getUID());
+        in.putExtra("TAB_NUM", 1); //decides which tab to open on 0 = characters, 1 = scenes
         startActivity(in);
     }
 

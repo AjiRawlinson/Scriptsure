@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import com.example.scriptur.Database.Character;
 import com.example.scriptur.Database.DBAdaptor;
+import com.example.scriptur.Database.Scene;
+
+import org.apache.commons.text.WordUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,14 +87,37 @@ public class NewSceneActivity extends AppCompatActivity {
     }
 
     public void saveSceneBtn(View v) {
-        if(characterIDs.size() < 1) {
-            Toast.makeText(this, "Scene must contain at least 1 character, Please select a Character.", Toast.LENGTH_LONG).show();
-        } else {
-            DBA.insertScene(name.getText().toString(), characterIDs, colour, playid, order);
-
-            Intent in = new Intent(this, Scene_List_Activity.class);
-            in.putExtra("PLAY_ID", playid);
-            startActivity(in);
+        ArrayList<Scene> sceneList = DBA.getAllScenesInPlay(playid);
+        String nameCapitalized = WordUtils.capitalizeFully(name.getText().toString().trim());
+        boolean validName = true;
+        for(Scene sceneDB: sceneList) {
+            if (sceneDB.getName().equalsIgnoreCase(nameCapitalized)) {
+                validName = false;
+            }
         }
+
+        if(validName) {
+            if(characterIDs.size() < 1) {
+                Toast.makeText(this, "Scene must contain at least 1 character, Please select a Character.", Toast.LENGTH_LONG).show();
+            } else {
+                DBA.insertScene(nameCapitalized, characterIDs, colour, playid, order);
+
+                Intent in = new Intent(this, SceneCharacterTabbedActivity.class);
+                in.putExtra("PLAY_ID", playid);
+                in.putExtra("TAB_NUM", 1); //decides which tab to open on 0 = characters, 1 = scenes
+                startActivity(in);
+            }
+        } else {
+            name.setText("");
+            Toast.makeText(this, "Scene with that name already exists in this play.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent in = new Intent(this, SceneCharacterTabbedActivity.class);
+        in.putExtra("PLAY_ID", playid);
+        in.putExtra("TAB_NUM", 1);
+        startActivity(in);
     }
 }

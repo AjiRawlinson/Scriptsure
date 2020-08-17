@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/ivAvatarSpinner"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="10px"
+        android:src="@drawable/script"/>
+
+    <TextView
+        android:id="@+id/tvAvatarSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="16sp"
+        android:typeface="monospace"
+        android:singleLine="true"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="Avatar Name" />
+
+</LinearLayout>

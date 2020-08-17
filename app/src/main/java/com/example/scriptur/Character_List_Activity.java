@@ -24,7 +24,7 @@ import com.example.scriptur.RecyclerViewAdaptors.RVAdaptorCharacter;
 import java.util.ArrayList;
 
 public class Character_List_Activity extends AppCompatActivity implements RVAdaptorCharacter.OnRowListener {
-
+    //TODO Delete class and xml class
     RecyclerView rvCharacter;
     ArrayList<Character> characterList;
     DBAdaptor DBA;

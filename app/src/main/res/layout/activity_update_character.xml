@@ -24,20 +24,6 @@
             tools:layout_editor_absoluteX="79dp"
             tools:layout_editor_absoluteY="101dp" />
 
-        <Spinner
-            android:id="@+id/spinnerUpdateGender"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:spinnerMode="dropdown"/>
-
-        <Switch
-            android:id="@+id/switchUpdateUserRole"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:text="I'm playing this character" />
-
         <Button
             android:id="@+id/btn_Update_Character_Colour"
             android:layout_width="match_parent"
@@ -47,6 +33,32 @@
             android:onClick="updateCharacterColourBtn"
             android:paddingTop="5px"
             android:paddingBottom="5px"
+            tools:layout_editor_absoluteX="137dp"
+            tools:layout_editor_absoluteY="197dp" />
+
+        <Switch
+            android:id="@+id/switchUpdateUserRole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="I'm playing this character" />
+
+        <Spinner
+            android:id="@+id/spinnerUpdateGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:spinnerMode="dialog"/>
+
+        <Button
+            android:id="@+id/btn_Update_Test_Voice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_margin="10px"
+            android:background="@color/colorAccent"
+            android:text="Listen to avatar voice"
+            android:onClick="updateTestVoice"
             tools:layout_editor_absoluteX="137dp"
             tools:layout_editor_absoluteY="197dp" />
 

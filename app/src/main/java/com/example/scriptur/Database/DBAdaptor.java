@@ -97,11 +97,11 @@ public class DBAdaptor {
     *   Character
      *****************/
 
-    public long insertCharacter(String name, String gender, Boolean userRole, String colour, int playID) {
+    public long insertCharacter(String name, String avatarCode, Boolean userRole, String colour, int playID) {
         SQLiteDatabase DB = myHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(myHelper.CHARACTER_NAME, name);
-        cv.put(myHelper.CHARACTER_GENDER, gender);
+        cv.put(myHelper.CHARACTER_AVATAR_CODE, avatarCode);
         if(!userRole) { cv.put(myHelper.CHARACTER_USER_PART, 0); }
         else { cv.put(myHelper.CHARACTER_USER_PART, 1);}
         cv.put(myHelper.CHARACTER_COLOUR, colour);
@@ -113,17 +113,17 @@ public class DBAdaptor {
     public ArrayList<Character> getAllCharacters() {
         ArrayList<Character> characterList = new ArrayList<>();
         SQLiteDatabase DB = myHelper.getReadableDatabase();
-        String[] columns = {myHelper.CHARACTER_ID, myHelper.CHARACTER_NAME, myHelper.CHARACTER_GENDER, myHelper.CHARACTER_USER_PART, myHelper.CHARACTER_COLOUR, myHelper.CHARACTER_PLAY_ID_FK};
+        String[] columns = {myHelper.CHARACTER_ID, myHelper.CHARACTER_NAME, myHelper.CHARACTER_AVATAR_CODE, myHelper.CHARACTER_USER_PART, myHelper.CHARACTER_COLOUR, myHelper.CHARACTER_PLAY_ID_FK};
         Cursor cursor = DB.query(myHelper.CHARACTER_TABLE_NAME, columns, null, null, null, null, myHelper.CHARACTER_NAME + " ASC");
         while(cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex(myHelper.CHARACTER_ID));
             String name = cursor.getString(cursor.getColumnIndex(myHelper.CHARACTER_NAME));
-            String gender = cursor.getString(cursor.getColumnIndex(myHelper.CHARACTER_GENDER));
+            String avatarCode = cursor.getString(cursor.getColumnIndex(myHelper.CHARACTER_AVATAR_CODE));
             int userRoleInt = cursor.getInt(cursor.getColumnIndex(myHelper.CHARACTER_USER_PART));
             Boolean userRole = false; if(userRoleInt == 1) { userRole = true; }
             String colour = cursor.getString(cursor.getColumnIndex(myHelper.CHARACTER_COLOUR));
             Play play = getPlayByID(cursor.getInt(cursor.getColumnIndex(myHelper.CHARACTER_PLAY_ID_FK)));
-            Character character = new Character(id, name, gender, userRole, colour,  play);
+            Character character = new Character(id, name, avatarCode, userRole, colour,  play);
             characterList.add(character);
         }
         return characterList;
@@ -133,16 +133,16 @@ public class DBAdaptor {
         ArrayList<Character> characterList = new ArrayList<>();
         SQLiteDatabase DB = myHelper.getReadableDatabase();
         Play play = getPlayByID(playID);//Why needed if just going to filter by play id anyway?
-        String[] columns = {myHelper.CHARACTER_ID, myHelper.CHARACTER_NAME, myHelper.CHARACTER_GENDER, myHelper.CHARACTER_USER_PART, myHelper.CHARACTER_COLOUR};
+        String[] columns = {myHelper.CHARACTER_ID, myHelper.CHARACTER_NAME, myHelper.CHARACTER_AVATAR_CODE, myHelper.CHARACTER_USER_PART, myHelper.CHARACTER_COLOUR};
         Cursor cursor = DB.query(myHelper.CHARACTER_TABLE_NAME, columns, "" + myHelper.CHARACTER_PLAY_ID_FK + " = ?", new String[] { "" + play.getUID()}, null, null, myHelper.CHARACTER_NAME + " ASC");
         while(cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex(myHelper.CHARACTER_ID));
             String name = cursor.getString(cursor.getColumnIndex(myHelper.CHARACTER_NAME));
-            String gender = cursor.getString(cursor.getColumnIndex(myHelper.CHARACTER_GENDER));
+            String avatarCode = cursor.getString(cursor.getColumnIndex(myHelper.CHARACTER_AVATAR_CODE));
             int userRoleInt = cursor.getInt(cursor.getColumnIndex(myHelper.CHARACTER_USER_PART));
             Boolean userRole = false; if(userRoleInt == 1) { userRole = true; }
             String colour = cursor.getString(cursor.getColumnIndex(myHelper.CHARACTER_COLOUR));
-            Character character = new Character(id, name, gender, userRole, colour, play);
+            Character character = new Character(id, name, avatarCode, userRole, colour, play);
             characterList.add(character);
         }
         return characterList;
@@ -160,7 +160,7 @@ public class DBAdaptor {
         String[] UID = {"" + character.getUID()};
         ContentValues cv = new ContentValues();
         cv.put(myHelper.CHARACTER_NAME, character.getName());
-        cv.put(myHelper.CHARACTER_GENDER, character.getGender());
+        cv.put(myHelper.CHARACTER_AVATAR_CODE, character.getAvatarCode());
         cv.put(myHelper.CHARACTER_COLOUR, character.getColour());
         if(!character.isUserPart()) { cv.put(myHelper.CHARACTER_USER_PART, 0); }
         else { cv.put(myHelper.CHARACTER_USER_PART, 1);}
@@ -475,14 +475,14 @@ public class DBAdaptor {
         private static final String CHARACTER_TABLE_NAME = "character";
         private static final String CHARACTER_ID = "character_id";
         private static final String CHARACTER_NAME = "name";
-        private static final String CHARACTER_GENDER = "gender";
+        private static final String CHARACTER_AVATAR_CODE = "avatar_code";
         private static final String CHARACTER_USER_PART = "user_part";
         private static final String CHARACTER_COLOUR = "colour";
         private static final String CHARACTER_PLAY_ID_FK = "play_id";
         private static final String CREATE_CHARACTER_TABLE = "CREATE TABLE " + CHARACTER_TABLE_NAME + " (" +
                                                             CHARACTER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                                                             CHARACTER_NAME + " VARCHAR(255), " +
-                                                            CHARACTER_GENDER + " VARCHAR(255), " +
+                                                            CHARACTER_AVATAR_CODE + " VARCHAR(255), " +
                                                             CHARACTER_USER_PART + " INTEGER," +
                                                             CHARACTER_COLOUR + " VARCHAR(255), " +
                                                             CHARACTER_PLAY_ID_FK + " INTEGER, " +

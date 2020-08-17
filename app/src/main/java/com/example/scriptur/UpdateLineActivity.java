@@ -65,8 +65,9 @@ public class UpdateLineActivity extends AppCompatActivity implements AdapterView
     }
 
     public void updateLineBtn(View v) {
+        String dialogCapitalized = etDialog.getText().toString().trim().substring(0,1).toUpperCase() + etDialog.getText().toString().trim().substring(1);
         line.setCharacter(DBA.getCharacterByID(characterID));
-        line.setDialog(etDialog.getText().toString());
+        line.setDialog(dialogCapitalized);
         DBA.updateLine(line);
 
         Intent in = new Intent(this, Line_List_Activity.class);
@@ -82,5 +83,12 @@ public class UpdateLineActivity extends AppCompatActivity implements AdapterView
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         characterID = line.getCharacter().getUID();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent in = new Intent(this, Line_List_Activity.class);
+        in.putExtra("SCENE_ID", line.getScene().getUID());
+        startActivity(in);
     }
 }

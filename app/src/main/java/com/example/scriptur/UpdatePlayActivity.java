@@ -8,9 +8,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.scriptur.Database.DBAdaptor;
 import com.example.scriptur.Database.Play;
+
+import org.apache.commons.text.WordUtils;
+
+import java.util.ArrayList;
 
 public class UpdatePlayActivity extends AppCompatActivity {
 
@@ -46,14 +51,31 @@ public class UpdatePlayActivity extends AppCompatActivity {
     }
 
     public void updateTitleBtn(View v) {
-        //TODO Make sure titles are unique
-        play.setTitle(title.getText().toString());
-        play.setColour(colour);
+        ArrayList<Play> playList = DBA.getAllPlays();
+        String titleCapitalized = WordUtils.capitalizeFully(title.getText().toString().trim());
+        boolean validTitle = true;
+        for(Play playDB: playList) {
+            if (playDB.getTitle().equalsIgnoreCase(titleCapitalized) && playDB.getUID() != play.getUID()) {
+                validTitle = false;
+            }
+        }
 
+        if(validTitle) {
+            play.setTitle(titleCapitalized);
+            play.setColour(colour);
 
-        DBA.updatePlay(play);
+            DBA.updatePlay(play);
+            Intent in = new Intent(this, Play_List_Activity.class);
+            startActivity(in);
+        } else {
+            title.setText("");
+            Toast.makeText(this, "Play with that title already exists.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
         Intent in = new Intent(this, Play_List_Activity.class);
         startActivity(in);
     }
-
 }

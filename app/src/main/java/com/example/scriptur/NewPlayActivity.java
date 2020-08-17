@@ -13,6 +13,10 @@ import android.widget.Toast;
 import com.example.scriptur.Database.DBAdaptor;
 import com.example.scriptur.Database.Play;
 
+import org.apache.commons.text.WordUtils;
+
+import java.util.ArrayList;
+
 public class NewPlayActivity extends AppCompatActivity {
 
     EditText title;
@@ -44,16 +48,32 @@ public class NewPlayActivity extends AppCompatActivity {
 
 
     public void saveTitleBtn(View v) {
-    //TODO Make sure titles are unique
-        DBA.insertPlay(title.getText().toString().trim(), colour);
-        Play play = DBA.getPlayByTitle(title.getText().toString());
+        ArrayList<Play> playList = DBA.getAllPlays();
+        String titleCapitalized = WordUtils.capitalizeFully(title.getText().toString().trim());
+        boolean validTitle = true;
+        for(Play play: playList) {
+            if (play.getTitle().equalsIgnoreCase(titleCapitalized)) {
+                 validTitle = false;
+            }
+        }
 
-        Intent in = new Intent(this, NewCharacterActivity.class);
-        in.putExtra("PLAY_ID", play.getUID());
-        startActivity(in);
+        if(validTitle) {
+            DBA.insertPlay(titleCapitalized, colour);
+            Play play = DBA.getPlayByTitle(title.getText().toString());
+
+            Intent in = new Intent(this, NewCharacterActivity.class);
+            in.putExtra("PLAY_ID", play.getUID());
+            startActivity(in);
+        } else {
+            title.setText("");
+            Toast.makeText(this, "Play with title already Exists.", Toast.LENGTH_LONG).show();
+        }
     }
 
-
-
+    @Override
+    public void onBackPressed() {
+        Intent in = new Intent(this, Play_List_Activity.class);
+        startActivity(in);
+    }
 
 }

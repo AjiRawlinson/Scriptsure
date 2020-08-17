@@ -21,10 +21,12 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
     Context context;
     ArrayList<Line> lines;
     OnRowListener rowListener;
+    boolean hideLines;
 
-    public RVAdaptorLine(Context context, ArrayList<Line> lines, OnRowListener rowListener) {
+    public RVAdaptorLine(Context context, ArrayList<Line> lines, boolean hideLines, OnRowListener rowListener) {
         this.context = context;
         this.lines = lines;
+        this.hideLines = hideLines;
         this.rowListener = rowListener;
     }
 
@@ -46,11 +48,46 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
             else { holder.data.setText("Last Score: N/A"); }
             holder.starImage.setImageResource(android.R.drawable.star_on);
         }
-        if(lines.get(position).getCharacter().getGender().equalsIgnoreCase("male")) {
-            holder.genderImage.setImageResource(R.drawable.male_actor);
-        } else if(lines.get(position).getCharacter().getGender().equalsIgnoreCase("female")) {
-            holder.genderImage.setImageResource(R.drawable.female_actor);
-        } else { holder.genderImage.setImageResource(R.drawable.unisex_actor); }
+        switch (lines.get(position).getCharacter().getAvatarCode()) {
+            case "female 1":
+                holder.avatarImage.setImageResource(R.drawable.female1);
+                break;
+            case "female 2":
+                holder.avatarImage.setImageResource(R.drawable.female2);
+                break;
+            case "female 3":
+                holder.avatarImage.setImageResource(R.drawable.female3);
+                break;
+            case "female 4":
+                holder.avatarImage.setImageResource(R.drawable.female4);
+                break;
+            case "female 5":
+                holder.avatarImage.setImageResource(R.drawable.female5);
+                break;
+            case "female 6":
+                holder.avatarImage.setImageResource(R.drawable.female6);
+                break;
+            case "male 1":
+                holder.avatarImage.setImageResource(R.drawable.male1);
+                break;
+            case "male 2":
+                holder.avatarImage.setImageResource(R.drawable.male2);
+                break;
+            case "male 3":
+                holder.avatarImage.setImageResource(R.drawable.male3);
+                break;
+            case "male 4":
+                holder.avatarImage.setImageResource(R.drawable.male4);
+                break;
+            case "male 5":
+                holder.avatarImage.setImageResource(R.drawable.male5);
+                break;
+            case "male 6":
+                holder.avatarImage.setImageResource(R.drawable.male6);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -67,7 +104,7 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
         TextView CharacterName;
         TextView dialog;
         TextView data;
-        ImageView genderImage;
+        ImageView avatarImage;
         ImageView starImage;
         OnRowListener rowListener;
 
@@ -76,7 +113,7 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
             this.CharacterName = (TextView) itemView.findViewById(R.id.tvLineCharacterRow);
             this.dialog = (TextView) itemView.findViewById(R.id.tvLineDialogRow);
             this.data = (TextView) itemView.findViewById(R.id.tvLineRowData);
-            this.genderImage = (ImageView) itemView.findViewById(R.id.ivLineRow);
+            this.avatarImage = (ImageView) itemView.findViewById(R.id.ivLineRow);
             this.starImage = (ImageView) itemView.findViewById(R.id.ivUserLineRow1);
 
             this.rowListener = rowListener;
