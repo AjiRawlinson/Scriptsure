@@ -43,6 +43,7 @@ public class NewCharacterActivity extends AppCompatActivity implements AdapterVi
 
     DBAdaptor DBA;
     EditText name;
+    ImageView topImage;
     Spinner genderSpinner;
     Switch userRoleSwitch;
     Button colourBtn;
@@ -66,12 +67,14 @@ public class NewCharacterActivity extends AppCompatActivity implements AdapterVi
 
         DBA = new DBAdaptor(this);
         name = (EditText) findViewById(R.id.etCharacterName);
+        topImage = (ImageView) findViewById(R.id.ivNewCharacter);
         genderSpinner = (Spinner) findViewById(R.id.genderSpinner);
         userRoleSwitch = (Switch) findViewById(R.id.userRoleSwitch);
         colourBtn = (Button) findViewById(R.id.btn_Character_Colour);
         Colours colours = new Colours();
         colour = colours.randomColour();
         colourBtn.setBackgroundColor(Color.parseColor(colour));
+        topImage.setBackgroundColor(Color.parseColor(colour));
         avatar = "female1";
 
         Intent in = getIntent();
@@ -96,6 +99,7 @@ public class NewCharacterActivity extends AppCompatActivity implements AdapterVi
     public void setCharacterColourBtn(View v) {
         Colours colours = new Colours();
         colour = colours.randomColour();
+        topImage.setBackgroundColor(Color.parseColor(colour));
         colourBtn.setBackgroundColor(Color.parseColor(colour));
     }
 
@@ -204,48 +208,75 @@ public class NewCharacterActivity extends AppCompatActivity implements AdapterVi
         switch(position) {
             case 0:
                 avatar = avatarNameArray[0].toLowerCase();
+                topImage.setImageResource(R.drawable.female1);
                 break;
             case 1:
                 avatar = avatarNameArray[1].toLowerCase();
+                topImage.setImageResource(R.drawable.female2);
                 break;
             case 2:
                 avatar = avatarNameArray[2].toLowerCase();
+                topImage.setImageResource(R.drawable.female3);
                 break;
             case 3:
                 avatar = avatarNameArray[3].toLowerCase();
+                topImage.setImageResource(R.drawable.female4);
                 break;
             case 4:
                 avatar = avatarNameArray[4].toLowerCase();
+                topImage.setImageResource(R.drawable.female5);
                 break;
             case 5:
                 avatar = avatarNameArray[5].toLowerCase();
+                topImage.setImageResource(R.drawable.female6);
                 break;
             case 6:
                 avatar = avatarNameArray[6].toLowerCase();
+                topImage.setImageResource(R.drawable.male1);
                 break;
             case 7:
                 avatar = avatarNameArray[7].toLowerCase();
+                topImage.setImageResource(R.drawable.male2);
                 break;
             case 8:
                 avatar = avatarNameArray[8].toLowerCase();
+                topImage.setImageResource(R.drawable.male3);
                 break;
             case 9:
                 avatar = avatarNameArray[9].toLowerCase();
+                topImage.setImageResource(R.drawable.male4);
                 break;
             case 10:
                 avatar = avatarNameArray[10].toLowerCase();
+                topImage.setImageResource(R.drawable.male5);
                 break;
             case 11:
                 avatar = avatarNameArray[11].toLowerCase();
+                topImage.setImageResource(R.drawable.male6);
                 break;
         }
 
     }
 
+
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         avatar = avatarNameArray[0].toLowerCase();
     }
+
+
+    @Override
+    public void onBackPressed() {
+        Intent in = new Intent(this, SceneCharacterTabbedActivity.class);
+        in.putExtra("PLAY_ID", playid);
+        in.putExtra("TAB_NUM", 0);
+        startActivity(in);
+    }
+
+    /**********************************************************************************************************************
+     *                                  S P I N N E R   A D A P T O R
+     **********************************************************************************************************************/
+
 
     public class SpinnerAdapter extends ArrayAdapter<String> {
 
@@ -285,11 +316,4 @@ public class NewCharacterActivity extends AppCompatActivity implements AdapterVi
 
     }
 
-    @Override
-    public void onBackPressed() {
-        Intent in = new Intent(this, SceneCharacterTabbedActivity.class);
-        in.putExtra("PLAY_ID", playid);
-        in.putExtra("TAB_NUM", 0);
-        startActivity(in);
-    }
 }

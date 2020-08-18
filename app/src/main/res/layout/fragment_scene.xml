@@ -13,7 +13,6 @@
         android:gravity = "top"
         android:layout_marginTop="10px"
         android:layout_weight = "1"
-        android:paddingBottom="200px"
         >
 
         <TextView

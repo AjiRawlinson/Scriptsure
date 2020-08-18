@@ -6,7 +6,15 @@
         />
 
     <item android:id="@+id/itemhideUserLine"
-        android:title="Hide / Unhide User Lines"
+        android:checkable="true"
+        android:title="Hide User Lines"
         />
+
+    <item android:id="@+id/itemVibrateOnCue"
+        android:checkable="true"
+        android:title="Vibrate on Cue"
+        />
+
+
 
 </menu>

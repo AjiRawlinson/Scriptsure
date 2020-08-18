@@ -32,7 +32,6 @@ public class Play_List_Activity extends AppCompatActivity implements RVAdaptorPl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_list);
-        setTitle("Play Library");
 
         DBA = new DBAdaptor(this);
         playList = DBA.getAllPlays();

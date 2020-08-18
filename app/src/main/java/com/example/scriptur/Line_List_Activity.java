@@ -9,11 +9,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -25,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -33,6 +37,7 @@ import android.widget.Toast;
 import com.example.scriptur.Database.DBAdaptor;
 import com.example.scriptur.Database.Line;
 import com.example.scriptur.RecyclerViewAdaptors.RVAdaptorLine;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -42,6 +47,7 @@ import java.util.zip.Inflater;
 public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLine.OnRowListener {
 
     RecyclerView rvLine;
+    FloatingActionButton playPause;
     ArrayList<Line> actualLineList, displayLineList;
     DBAdaptor DBA;
     RVAdaptorLine RVALine;
@@ -49,8 +55,8 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
     SpeechRecognizer recognizer;
     final Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);//can't go in OnCreate??
     TextView noData;
-    int sceneID, currentLine, lineScore;
-    boolean hideLines = false;
+    int sceneID, currentLine, lineScore, selectedPosition = -1;
+    boolean hideLines = false, vibrateOnCue = false, runThroughLines = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +70,7 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
         sceneID = in.getIntExtra("SCENE_ID", 1);
         setTitle(DBA.getSceneByID(sceneID).getName());
 
+        playPause = (FloatingActionButton) findViewById(R.id.fBtnStart);
         noData = (TextView) findViewById(R.id.tvLineNoData);
         rvLine = (RecyclerView) findViewById(R.id.RVLine);
         rvLine.setNestedScrollingEnabled(true);
@@ -72,7 +79,7 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
         actualLineList = DBA.getAllLinesInScene(sceneID);
         displayLineList = DBA.getAllLinesInScene(sceneID);
         if(!displayLineList.isEmpty()) {
-            RVALine = new RVAdaptorLine(this, displayLineList, hideLines, this);
+            RVALine = new RVAdaptorLine(this, displayLineList, hideLines, selectedPosition, this);
             rvLine.setAdapter(RVALine);
         } else { noData.setVisibility(View.VISIBLE); }
 
@@ -123,7 +130,11 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
         recognizer.setRecognitionListener(new RecognitionListener() {
             @Override
             public void onReadyForSpeech(Bundle params) {
-                //TODO vibrate after 2? seconds of no speech
+                currentLine++;
+                if(vibrateOnCue) {
+                    Vibrator vibrate = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    vibrate.vibrate(VibrationEffect.createOneShot(50, 1));
+                }
             }
 
             @Override
@@ -143,12 +154,20 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
 
             @Override
             public void onEndOfSpeech() {
-
+//
             }
 
             @Override
             public void onError(int error) {
-
+                if(runThroughLines) { //this stops running this when skipping through lines when pressing next / previous line button
+                    Vibrator vibrate = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    vibrate.vibrate(VibrationEffect.createOneShot(700, 255));
+                    Toast.makeText(Line_List_Activity.this, "Missed Cue", Toast.LENGTH_SHORT).show();
+                    Line line = actualLineList.get(currentLine - 1);
+                    line.setScore(0);
+                    DBA.updateLine(line);
+                    speakLine();
+                }
             }
 
             @Override
@@ -156,13 +175,11 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
                 ArrayList<String> voiceInputAL = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 String voiceInput = voiceInputAL.toString().substring(1, (voiceInputAL.toString().length() - 1)); //removes square brackets around input string
                 CompareText ct = new CompareText();
-                lineScore = ct.calculateScore(actualLineList.get(currentLine).getDialog(), voiceInput);
+                lineScore = ct.calculateScore(actualLineList.get(currentLine - 1).getDialog(), voiceInput);
                 Toast.makeText(Line_List_Activity.this, "input line: " + voiceInput + "\nscore: " + lineScore + "%", Toast.LENGTH_SHORT).show();
-                Line line = actualLineList.get(currentLine);
+                Line line = actualLineList.get(currentLine - 1);
                 line.setScore(lineScore);
                 DBA.updateLine(line);
-                currentLine++;
-                RVALine.notifyDataSetChanged();
                 speakLine();
             }
 
@@ -186,41 +203,78 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
         startActivity(in);
     }
 
-    public void startBtn(View v) { //rename play lines?
-        speakLine();
+    public void startBtn(View v) {
+        if(runThroughLines) {
+            runThroughLines = false;
+            playPause.setImageResource(android.R.drawable.ic_media_play);
+            tts.stop();
+            recognizer.cancel();
+        } else {
+            runThroughLines = true;
+            playPause.setImageResource(android.R.drawable.ic_media_pause);
+            speakLine();
+        }
     }
 
     public void nextLineBtn(View v) {
-        if(tts.isSpeaking()) { tts.stop(); }
-        if(currentLine < displayLineList.size()) {
-            currentLine++;
-            speakLine();
+        if(currentLine < displayLineList.size() - 1) {
+            if(runThroughLines) { //interaction is happening
+                tts.stop();
+                runThroughLines = false;
+                playPause.setImageResource(android.R.drawable.ic_media_play);
+                recognizer.cancel();
+                highlightRow(currentLine);
+                rvLine.smoothScrollToPosition(currentLine);
+//                speakLine();
+            } else { //no interaction
+                currentLine++;
+                highlightRow(currentLine);
+                rvLine.smoothScrollToPosition(currentLine);
+            }
         } else {
             Toast.makeText(this, "Last line in Scene", Toast.LENGTH_LONG).show();
         }
     }
 
     public void previousLineBtn(View v) {
-        if(tts.isSpeaking()) { tts.stop(); }
-        if(currentLine < displayLineList.size()) {
-            currentLine -= 2; // -2 because when speaking starts, currentLine++ is already called
-            speakLine();
+        if(currentLine > 1 && runThroughLines) {
+            tts.stop();
+            runThroughLines = false;
+            playPause.setImageResource(android.R.drawable.ic_media_play);
+            recognizer.cancel();
+            currentLine -= 2; //-2 because when speaking starts, currentLine++ is already called
+            highlightRow(currentLine);
+            rvLine.smoothScrollToPosition(currentLine);
+//            speakLine();
+        } else if(currentLine > 0 && !runThroughLines) {
+//        if(currentLine > 0 ) {
+            currentLine--;
+            highlightRow(currentLine);
+            rvLine.smoothScrollToPosition(currentLine);
         } else {
             Toast.makeText(this, "First line in Scene", Toast.LENGTH_LONG).show();
         }
     }
 
     public void fromTheTopBtn(View v) {
-        if(tts.isSpeaking()) { tts.stop(); }
         currentLine = 0;
-        speakLine();
+        highlightRow(currentLine);
+        rvLine.smoothScrollToPosition(currentLine);
+        if(runThroughLines) {
+            tts.stop();
+            recognizer.cancel();
+            runThroughLines = false;
+            playPause.setImageResource(android.R.drawable.ic_media_play);
+//            speakLine();
+        }
     }
 
 
 
     public void speakLine() {
         if(currentLine < displayLineList.size()) {
-            rvLine.smoothScrollToPosition(currentLine);
+//            rvLine.findViewHolderForAdapterPosition(currentLine).itemView.performClick();
+            highlightRow(currentLine);
             if(actualLineList.get(currentLine).getCharacter().isUserPart()) {
                 recognizer.startListening(recognizerIntent);
             } else {
@@ -266,13 +320,18 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
                 }
 //                tts.speak(lineList.get(currentLine).getDialog(), TextToSpeech.QUEUE_FLUSH, null, "");
             }
-        } else { currentLine = 0; }
+        } else {
+            RVALine.notifyDataSetChanged();
+            currentLine = 0;
+            runThroughLines = false;
+            playPause.setImageResource(android.R.drawable.ic_media_play);
+            highlightRow(-1);
+        }
     }
 
     public void getVoice(String avatarCode, String dialog) {
         Set<Voice> voices = tts.getVoices();
         int count = 0;
-        Toast.makeText(this, "here!" + voices.size(), Toast.LENGTH_SHORT).show();
         for(Voice voice: voices) {
             if(voice.getName().contains("en-gb") && voice.getName().contains(avatarCode)) {
                 tts.setVoice(voice);
@@ -281,6 +340,24 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
             }
             count++;
         }
+    }
+
+    public void highlightRow(int position) {
+        RVALine.selectedPosition = position;
+        selectedPosition = position;
+        if(position >= 0) {
+            currentLine = position;
+            rvLine.smoothScrollToPosition(currentLine);
+        }
+        RVALine.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRowClick(int position) {
+        RVALine.selectedPosition = position;
+        selectedPosition = position;
+        currentLine = position;
+        RVALine.notifyDataSetChanged();
     }
 
     @Override
@@ -362,20 +439,34 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
             case R.id.itemhideUserLine:
                 if(!hideLines) {
                     hideLines = true;
+                    item.setChecked(true);
                     for (Line line : displayLineList) {
-                        if (line.getCharacter().isUserPart()) {
+                        if(line.getCharacter().isUserPart()) {
                             String stars = line.getDialog().replaceAll("[^ ]", "*");
                             line.setDialog(stars);
                         }
                     }
                 } else {
                     hideLines = false;
+                    item.setChecked(false);
                     ArrayList<Line> newLineList = DBA.getAllLinesInScene(sceneID);
                     for(int i = 0; i < displayLineList.size(); i++) { //notifying adapter on data set chanege only seems to work when you set chage, re geting it from DB
-                        if(displayLineList.get(1).getCharacter().isUserPart()) {displayLineList.get(i).setDialog(newLineList.get(i).getDialog()); }
+                        if(displayLineList.get(i).getCharacter().isUserPart()) {
+                            displayLineList.get(i).setDialog(newLineList.get(i).getDialog());
+                        }
                     }
                 }
                 RVALine.notifyDataSetChanged();
+                return true;
+            case R.id.itemVibrateOnCue:
+                if(vibrateOnCue) {
+                    vibrateOnCue = false;
+                    item.setChecked(false);
+                }
+                else {
+                    vibrateOnCue = true;
+                    item.setChecked(true);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

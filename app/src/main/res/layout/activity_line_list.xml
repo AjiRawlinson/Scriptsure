@@ -7,14 +7,13 @@
     tools:context=".Line_List_Activity">
 
     <LinearLayout
-        android:id="@+id/LineLinearLayout"
         android:orientation = "vertical"
         android:layout_width = "match_parent"
         android:layout_height = "match_parent"
         android:gravity = "top"
         android:layout_marginTop="10px"
+        android:paddingBottom="150px"
         android:layout_weight = "1"
-        android:paddingBottom="200px"
         >
 
         <TextView
@@ -40,27 +39,48 @@
             tools:layout_editor_absoluteY="1dp"
             />
 
-        <Button
-            android:id="@+id/btn_new_Line"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Add New Line"
-            android:onClick="addLineBtn"
-            tools:layout_editor_absoluteX="137dp"
-            tools:layout_editor_absoluteY="197dp" />
-
 
 
     </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="bottom|center_horizontal">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fBtNewLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:backgroundTint="#2795f1"
+            android:onClick="addLineBtn"
+            android:layout_gravity="right"
+            app:srcCompat="@android:drawable/ic_input_add" />
+
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/colorPrimaryDark"
+            android:layout_marginLeft="20px"
+            android:layout_marginRight="20px"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:gravity="bottom|center_horizontal"
-        android:paddingBottom="15px">
+        android:background="#ffffff"
+        android:paddingTop="7px"
+        android:gravity="bottom|center_horizontal">
+
+
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -68,6 +88,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
+            android:backgroundTint="@color/colorPrimary"
             android:clickable="true"
             android:onClick="fromTheTopBtn"
             app:srcCompat="@android:drawable/ic_media_rew" />
@@ -83,6 +104,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
+            android:backgroundTint="@color/colorPrimary"
             android:onClick="previousLineBtn"
             android:clickable="true"
             app:srcCompat="@android:drawable/ic_media_previous" />
@@ -99,6 +121,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="3"
             android:clickable="true"
+            android:backgroundTint="@color/colorPrimary"
             android:onClick="startBtn"
             app:srcCompat="@android:drawable/ic_media_play" />
         <Space
@@ -113,10 +136,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
+            android:backgroundTint="@color/colorPrimary"
             android:onClick="nextLineBtn"
             android:clickable="true"
             app:srcCompat="@android:drawable/ic_media_next" />
 
+    </LinearLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

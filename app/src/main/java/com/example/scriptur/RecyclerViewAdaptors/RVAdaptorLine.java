@@ -21,12 +21,14 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
     Context context;
     ArrayList<Line> lines;
     OnRowListener rowListener;
+    public static int selectedPosition;
     boolean hideLines;
 
-    public RVAdaptorLine(Context context, ArrayList<Line> lines, boolean hideLines, OnRowListener rowListener) {
+    public RVAdaptorLine(Context context, ArrayList<Line> lines, boolean hideLines, int selectedPosition, OnRowListener rowListener) {
         this.context = context;
         this.lines = lines;
         this.hideLines = hideLines;
+        this.selectedPosition = selectedPosition;
         this.rowListener = rowListener;
     }
 
@@ -42,7 +44,9 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
     public void onBindViewHolder(@NonNull RVHolderLine holder, int position) {
         holder.CharacterName.setText(lines.get(position).getCharacter().getName());
         holder.dialog.setText(lines.get(position).getDialog());
-        holder.itemView.setBackgroundColor(Color.parseColor(lines.get(position).getCharacter().getColour()));
+        if(selectedPosition == position) {
+            holder.itemView.setBackgroundColor(Color.parseColor(lines.get(position).getCharacter().getColour()));
+        } else { holder.itemView.setBackgroundColor(Color.parseColor("#10" + lines.get(position).getCharacter().getColour().substring(1))); }
         if(lines.get(position).getCharacter().isUserPart()) {
             if(lines.get(position).getScore() >= 0) { holder.data.setText("Last Score: " +lines.get(position).getScore()); }
             else { holder.data.setText("Last Score: N/A"); }
@@ -100,7 +104,7 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
      *                                  R E C Y C L E V I E W   H O L D E R
      **********************************************************************************************************************/
 
-    public class RVHolderLine extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+    public class RVHolderLine extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener {
         TextView CharacterName;
         TextView dialog;
         TextView data;
@@ -118,7 +122,13 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
 
             this.rowListener = rowListener;
 
+            itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            rowListener.onRowClick(getAdapterPosition());
         }
 
         @Override
@@ -129,7 +139,7 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
     }
 
     public interface OnRowListener {
-//        void OnRowClick(int position) // maybe to reveal user line
+        void onRowClick(int position);
         void onRowLongClick(int position, View v);
     }
 }

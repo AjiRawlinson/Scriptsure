@@ -13,12 +13,18 @@
         android:gravity = "center_horizontal"
         >
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/dialog"
+            android:layout_marginTop="50dp"/>
+
         <Spinner
             android:id="@+id/SpinnerCharacters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:spinnerMode="dropdown"/>
+            android:spinnerMode="dialog"/>
 
         <EditText
             android:id="@+id/etLineDialog"
