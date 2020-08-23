@@ -206,12 +206,12 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
     public void startBtn(View v) {
         if(runThroughLines) {
             runThroughLines = false;
-            playPause.setImageResource(android.R.drawable.ic_media_play);
+            playPause.setImageResource(R.drawable.play);
             tts.stop();
             recognizer.cancel();
         } else {
             runThroughLines = true;
-            playPause.setImageResource(android.R.drawable.ic_media_pause);
+            playPause.setImageResource(R.drawable.pause);
             speakLine();
         }
     }
@@ -221,7 +221,7 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
             if(runThroughLines) { //interaction is happening
                 tts.stop();
                 runThroughLines = false;
-                playPause.setImageResource(android.R.drawable.ic_media_play);
+                playPause.setImageResource(R.drawable.play);
                 recognizer.cancel();
                 highlightRow(currentLine);
                 rvLine.smoothScrollToPosition(currentLine);
@@ -240,7 +240,7 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
         if(currentLine > 1 && runThroughLines) {
             tts.stop();
             runThroughLines = false;
-            playPause.setImageResource(android.R.drawable.ic_media_play);
+            playPause.setImageResource(R.drawable.play);
             recognizer.cancel();
             currentLine -= 2; //-2 because when speaking starts, currentLine++ is already called
             highlightRow(currentLine);
@@ -264,7 +264,7 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
             tts.stop();
             recognizer.cancel();
             runThroughLines = false;
-            playPause.setImageResource(android.R.drawable.ic_media_play);
+            playPause.setImageResource(R.drawable.play);
 //            speakLine();
         }
     }
@@ -324,7 +324,7 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
             RVALine.notifyDataSetChanged();
             currentLine = 0;
             runThroughLines = false;
-            playPause.setImageResource(android.R.drawable.ic_media_play);
+            playPause.setImageResource(R.drawable.play);
             highlightRow(-1);
         }
     }

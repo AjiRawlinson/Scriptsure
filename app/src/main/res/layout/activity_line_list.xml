@@ -60,7 +60,7 @@
             android:backgroundTint="#2795f1"
             android:onClick="addLineBtn"
             android:layout_gravity="right"
-            app:srcCompat="@android:drawable/ic_input_add" />
+            app:srcCompat="@drawable/plus" />
 
 
 
@@ -91,7 +91,7 @@
             android:backgroundTint="@color/colorPrimary"
             android:clickable="true"
             android:onClick="fromTheTopBtn"
-            app:srcCompat="@android:drawable/ic_media_rew" />
+            app:srcCompat="@drawable/rewind" />
         <Space
             android:layout_width="0dp"
             android:layout_height="1dp"
@@ -107,7 +107,7 @@
             android:backgroundTint="@color/colorPrimary"
             android:onClick="previousLineBtn"
             android:clickable="true"
-            app:srcCompat="@android:drawable/ic_media_previous" />
+            app:srcCompat="@drawable/back" />
         <Space
             android:layout_width="0dp"
             android:layout_height="1dp"
@@ -123,7 +123,7 @@
             android:clickable="true"
             android:backgroundTint="@color/colorPrimary"
             android:onClick="startBtn"
-            app:srcCompat="@android:drawable/ic_media_play" />
+            app:srcCompat="@drawable/play" />
         <Space
             android:layout_width="0dp"
             android:layout_height="1dp"
@@ -139,7 +139,7 @@
             android:backgroundTint="@color/colorPrimary"
             android:onClick="nextLineBtn"
             android:clickable="true"
-            app:srcCompat="@android:drawable/ic_media_next" />
+            app:srcCompat="@drawable/next" />
 
     </LinearLayout>
     </LinearLayout>

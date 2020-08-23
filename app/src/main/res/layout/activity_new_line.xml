@@ -45,6 +45,26 @@
             android:orientation="vertical"
             android:gravity="bottom"
             >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:gravity="bottom|right"
+                android:paddingBottom="25px"
+                android:paddingRight="15px">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fBtNewPlay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:clickable="true"
+                    android:onClick="openCameraBtn"
+                    app:srcCompat="@drawable/camera" />
+
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btn_Save_Line"

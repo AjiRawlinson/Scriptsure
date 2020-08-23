@@ -5,8 +5,10 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <application
+       <application
         android:allowBackup="true"
         android:icon="@drawable/scriptur_logo_non_transparent"
         android:label="@string/app_name"
@@ -16,41 +18,47 @@
         <activity
             android:name=".SceneCharacterTabbedActivity"
             android:label="@string/title_activity_scene_character_tabbed"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".Play_List_Activity">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".Play_List_Activity"/>
+            android:parentActivityName=".Play_List_Activity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Play_List_Activity" />
         </activity>
 
-        <activity android:name=".UpdateLineActivity"
+           <activity android:name=".PictureScanActivity">
+               android:parentActivityName=".NewLineActivity">
+               <meta-data
+                   android:name="android.support.PARENT_ACTIVITY"
+                   android:value=".NewLineActivity" />
+           </activity>
+        <activity
+            android:name=".UpdateLineActivity"
             android:parentActivityName=".Line_List_Activity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Line_List_Activity"/>
+                android:value=".Line_List_Activity" />
         </activity>
-
-        <activity android:name=".UpdateSceneActivity"
+        <activity
+            android:name=".UpdateSceneActivity"
             android:parentActivityName=".SceneCharacterTabbedActivity">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".SceneCharacterTabbedActivity"/>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SceneCharacterTabbedActivity" />
         </activity>
-
-        <activity android:name=".UpdateCharacterActivity"
+        <activity
+            android:name=".UpdateCharacterActivity"
             android:parentActivityName=".SceneCharacterTabbedActivity">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".SceneCharacterTabbedActivity"/>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SceneCharacterTabbedActivity" />
         </activity>
-
-        <activity android:name=".UpdatePlayActivity"
+        <activity
+            android:name=".UpdatePlayActivity"
             android:parentActivityName=".Play_List_Activity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Play_List_Activity"/>
+                android:value=".Play_List_Activity" />
         </activity>
-
         <activity android:name=".Play_List_Activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,52 +66,55 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".Line_List_Activity"
+        <activity
+            android:name=".Line_List_Activity"
             android:parentActivityName=".SceneCharacterTabbedActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SceneCharacterTabbedActivity"/>
+                android:value=".SceneCharacterTabbedActivity" />
         </activity>
-
-
-        <activity android:name=".NewLineActivity"
+        <activity
+            android:name=".NewLineActivity"
             android:parentActivityName=".Line_List_Activity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Line_List_Activity"/>
+                android:value=".Line_List_Activity" />
         </activity>
-
-        <activity android:name=".NewCharacterActivity"
+        <activity
+            android:name=".NewCharacterActivity"
             android:parentActivityName=".SceneCharacterTabbedActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SceneCharacterTabbedActivity"/>
+                android:value=".SceneCharacterTabbedActivity" />
         </activity>
-
-        <activity android:name=".NewSceneActivity"
+        <activity
+            android:name=".NewSceneActivity"
             android:parentActivityName=".SceneCharacterTabbedActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SceneCharacterTabbedActivity"/>
+                android:value=".SceneCharacterTabbedActivity" />
         </activity>
-
-        <activity android:name=".NewPlayActivity"
+        <activity
+            android:name=".NewPlayActivity"
             android:parentActivityName=".Play_List_Activity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Play_List_Activity"/>
-        </activity>
-
-
-
-        <!--TO BE DELETED-->
+                android:value=".Play_List_Activity" />
+        </activity> <!-- TO BE DELETED -->
         <activity android:name=".Character_List_Activity" />
         <activity android:name=".Scene_List_Activity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"></activity>
 
+           <provider
+               android:name="androidx.core.content.FileProvider"
+               android:authorities="com.example.android.fileprovider"
+               android:exported="false"
+               android:grantUriPermissions="true">
+               <meta-data
+                   android:name="android.support.FILE_PROVIDER_PATHS"
+                   android:resource="@xml/file_paths"></meta-data>
+           </provider>
 
-        </activity>
-    </application>
+       </application>
 
 </manifest>

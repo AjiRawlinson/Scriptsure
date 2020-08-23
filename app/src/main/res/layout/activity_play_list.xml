@@ -57,7 +57,7 @@
             android:layout_weight="3"
             android:clickable="true"
             android:onClick="newPlayBtn"
-            app:srcCompat="@android:drawable/ic_input_add" />
+            app:srcCompat="@drawable/plus" />
 
 
     </LinearLayout>
