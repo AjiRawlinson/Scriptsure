@@ -1,7 +1,6 @@
 package com.example.scriptur;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -14,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,16 +23,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.scriptur.DataManipulation.Colours;
 import com.example.scriptur.Database.Character;
 import com.example.scriptur.Database.DBAdaptor;
-import com.example.scriptur.Database.Play;
 
 import org.apache.commons.text.WordUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 
@@ -64,6 +59,10 @@ public class NewCharacterActivity extends AppCompatActivity implements AdapterVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_character);
         setTitle("New Character");
+        if (getSupportActionBar() != null) {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(false);
+        }
 
         DBA = new DBAdaptor(this);
         name = (EditText) findViewById(R.id.etCharacterName);
@@ -176,30 +175,34 @@ public class NewCharacterActivity extends AppCompatActivity implements AdapterVi
 
 
     public void saveCharacterBtn(View v) {
-        ArrayList<Character> characterList = DBA.getAllCharactersInPlay(playid);
-        String nameCapitalized = WordUtils.capitalizeFully(name.getText().toString().trim());
-        boolean validName = true;
-        for(Character characterDB: characterList) {
-            if (characterDB.getName().equalsIgnoreCase(nameCapitalized)) {
-                validName = false;
+        if(name.getText().toString().length() > 0) {
+            ArrayList<Character> characterList = DBA.getAllCharactersInPlay(playid);
+            String nameCapitalized = WordUtils.capitalizeFully(name.getText().toString().trim());
+            boolean validName = true;
+            for (Character characterDB : characterList) {
+                if (characterDB.getName().equalsIgnoreCase(nameCapitalized)) {
+                    validName = false;
+                }
             }
-        }
 
-        if(validName) {
-            if (userRoleSwitch.isChecked()) {
-                userRole = true;
+            if (validName) {
+                if (userRoleSwitch.isChecked()) {
+                    userRole = true;
+                } else {
+                    userRole = false;
+                }
+                DBA.insertCharacter(nameCapitalized, avatar, userRole, colour, playid);
+
+                Intent in = new Intent(this, SceneCharacterTabbedActivity.class);
+                in.putExtra("PLAY_ID", playid);
+                in.putExtra("TAB_NUM", 0); //decides which tab to open on 0 = characters, 1 = scenes
+                startActivity(in);
             } else {
-                userRole = false;
+                name.setText("");
+                Toast.makeText(this, "Character with that name already exists in this play.", Toast.LENGTH_LONG).show();
             }
-            DBA.insertCharacter(nameCapitalized, avatar, userRole, colour, playid);
-
-            Intent in = new Intent(this, SceneCharacterTabbedActivity.class);
-            in.putExtra("PLAY_ID", playid);
-            in.putExtra("TAB_NUM", 0); //decides which tab to open on 0 = characters, 1 = scenes
-            startActivity(in);
         } else {
-            name.setText("");
-            Toast.makeText(this, "Character with that name already exists in this play.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Enter Character Name.", Toast.LENGTH_LONG).show();
         }
     }
 

@@ -10,9 +10,9 @@
 
        <application
         android:allowBackup="true"
-        android:icon="@drawable/scriptur_logo_non_transparent"
+        android:icon="@drawable/sciprtsure_icon"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/scriptur_logo_non_transparent"
+        android:roundIcon="@drawable/sciprtsure_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -25,7 +25,7 @@
                 android:value=".Play_List_Activity" />
         </activity>
 
-           <activity android:name=".PictureScanActivity">
+           <activity android:name=".PictureScanActivity"
                android:parentActivityName=".NewLineActivity">
                <meta-data
                    android:name="android.support.PARENT_ACTIVITY"
@@ -101,9 +101,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Play_List_Activity" />
         </activity> <!-- TO BE DELETED -->
-        <activity android:name=".Character_List_Activity" />
-        <activity android:name=".Scene_List_Activity" />
-        <activity android:name=".MainActivity"></activity>
 
            <provider
                android:name="androidx.core.content.FileProvider"

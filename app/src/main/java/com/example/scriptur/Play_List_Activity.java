@@ -1,5 +1,6 @@
 package com.example.scriptur;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +33,10 @@ public class Play_List_Activity extends AppCompatActivity implements RVAdaptorPl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_list);
+        if (getSupportActionBar() != null) {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(false);
+        }
 
         DBA = new DBAdaptor(this);
         playList = DBA.getAllPlays();
@@ -91,6 +96,12 @@ public class Play_List_Activity extends AppCompatActivity implements RVAdaptorPl
                 switch(which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         DBA.deletePlay(playList.get(position));
+                        ArrayList<Play> newPlayList = DBA.getAllPlays();
+                        for(int i = 0; i < newPlayList.size(); i++ ) {
+                            playList.set(i, newPlayList.get(i));
+                        }
+                        playList.remove(playList.size() - 1);
+                        RVAPlay.notifyDataSetChanged();
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
 //                        do nothing

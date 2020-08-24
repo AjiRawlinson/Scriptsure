@@ -1,5 +1,6 @@
 package com.example.scriptur;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.scriptur.DataManipulation.Colours;
 import com.example.scriptur.Database.DBAdaptor;
 import com.example.scriptur.Database.Play;
 
@@ -29,6 +31,10 @@ public class NewPlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_play);
         setTitle("New Play");
+        if (getSupportActionBar() != null) {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(false);
+        }
 
         title = (EditText) findViewById(R.id.et_title);
         colourBtn = (Button) findViewById(R.id.btn_Play_Colour);
@@ -48,26 +54,28 @@ public class NewPlayActivity extends AppCompatActivity {
 
 
     public void saveTitleBtn(View v) {
-        ArrayList<Play> playList = DBA.getAllPlays();
-        String titleCapitalized = WordUtils.capitalizeFully(title.getText().toString().trim());
-        boolean validTitle = true;
-        for(Play play: playList) {
-            if (play.getTitle().equalsIgnoreCase(titleCapitalized)) {
-                 validTitle = false;
+        if (title.getText().toString().length() > 0) {
+            ArrayList<Play> playList = DBA.getAllPlays();
+            String titleCapitalized = WordUtils.capitalizeFully(title.getText().toString().trim());
+            boolean validTitle = true;
+            for(Play play: playList) {
+                if (play.getTitle().equalsIgnoreCase(titleCapitalized)) {
+                     validTitle = false;
+                }
             }
-        }
 
-        if(validTitle) {
-            DBA.insertPlay(titleCapitalized, colour);
-            Play play = DBA.getPlayByTitle(title.getText().toString());
+            if(validTitle) {
+                DBA.insertPlay(titleCapitalized, colour);
+                Play play = DBA.getPlayByTitle(title.getText().toString());
 
-            Intent in = new Intent(this, NewCharacterActivity.class);
-            in.putExtra("PLAY_ID", play.getUID());
-            startActivity(in);
-        } else {
-            title.setText("");
-            Toast.makeText(this, "Play with title already Exists.", Toast.LENGTH_LONG).show();
-        }
+                Intent in = new Intent(this, NewCharacterActivity.class);
+                in.putExtra("PLAY_ID", play.getUID());
+                startActivity(in);
+            } else {
+                title.setText("");
+                Toast.makeText(this, "Play with title already Exists.", Toast.LENGTH_LONG).show();
+            }
+        } else { Toast.makeText(this, "Please Enter Play Title", Toast.LENGTH_LONG).show(); }
     }
 
     @Override

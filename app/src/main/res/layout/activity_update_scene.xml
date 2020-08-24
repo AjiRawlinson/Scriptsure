@@ -13,26 +13,22 @@
         android:gravity="center_horizontal"
         >
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/scene"
+            android:layout_marginTop="120dp"/>
+
         <EditText
             android:id="@+id/etUpdateSceneName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="60dp"
             android:ems="15"
             android:inputType="textPersonName"
             android:text="Scene Name"
             tools:layout_editor_absoluteX="79dp"
             tools:layout_editor_absoluteY="101dp" />
-
-        <ListView
-            android:id="@+id/lvUpdateCharacters"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:choiceMode="multipleChoice"
-            >
-        </ListView>
 
         <Button
             android:id="@+id/btn_Update_Scene_Colour"
@@ -45,6 +41,20 @@
             android:paddingBottom="5px"
             tools:layout_editor_absoluteX="137dp"
             tools:layout_editor_absoluteY="197dp" />
+
+        <ListView
+            android:id="@+id/lvUpdateCharacters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginRight="80dp"
+            android:choiceMode="multipleChoice"
+            android:layout_gravity="center"
+            >
+        </ListView>
+
+
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -1,5 +1,6 @@
 package com.example.scriptur;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.scriptur.DataManipulation.Colours;
 import com.example.scriptur.Database.Character;
 import com.example.scriptur.Database.DBAdaptor;
 import com.example.scriptur.Database.Scene;
@@ -38,6 +40,10 @@ public class UpdateSceneActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_scene);
         setTitle("Update Scene");
+        if (getSupportActionBar() != null) {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(false);
+        }
 
         DBA = new DBAdaptor(this);
         name = (EditText) findViewById(R.id.etUpdateSceneName);
@@ -99,32 +105,34 @@ public class UpdateSceneActivity extends AppCompatActivity {
     }
 
     public void updateSceneBtn(View v) {
-        ArrayList<Scene> sceneList = DBA.getAllScenesInPlay(scene.getPlay().getUID());
-        String nameCapitalized = WordUtils.capitalizeFully(name.getText().toString().trim());
-        boolean validName = true;
-        for(Scene sceneDB: sceneList) {
-            if (sceneDB.getName().equalsIgnoreCase(nameCapitalized) && sceneDB.getUID() != scene.getUID()) {
-                validName = false;
+        if(name.getText().toString().length() > 0) {
+            ArrayList<Scene> sceneList = DBA.getAllScenesInPlay(scene.getPlay().getUID());
+            String nameCapitalized = WordUtils.capitalizeFully(name.getText().toString().trim());
+            boolean validName = true;
+            for (Scene sceneDB : sceneList) {
+                if (sceneDB.getName().equalsIgnoreCase(nameCapitalized) && sceneDB.getUID() != scene.getUID()) {
+                    validName = false;
+                }
             }
-        }
 
-        if(validName) {
-            if (characterIDs.size() < 1) {
-                Toast.makeText(this, "Scene must contain at least 1 character, Please select a Character.", Toast.LENGTH_LONG).show();
+            if (validName) {
+                if (characterIDs.size() < 1) {
+                    Toast.makeText(this, "Scene must contain at least 1 character, Please select a Character.", Toast.LENGTH_LONG).show();
+                } else {
+                    scene.setName(nameCapitalized);
+                    scene.setColour(colour);
+                    DBA.updateSceneAndCharacterList(scene, characterIDs);
+
+                    Intent in = new Intent(this, SceneCharacterTabbedActivity.class);
+                    in.putExtra("PLAY_ID", scene.getPlay().getUID());
+                    in.putExtra("TAB_NUM", 1); //decides which tab to open on 0 = characters, 1 = scenes
+                    startActivity(in);
+                }
             } else {
-                scene.setName(nameCapitalized);
-                scene.setColour(colour);
-                DBA.updateScene(scene, characterIDs);
-
-                Intent in = new Intent(this, SceneCharacterTabbedActivity.class);
-                in.putExtra("PLAY_ID", scene.getPlay().getUID());
-                in.putExtra("TAB_NUM", 1); //decides which tab to open on 0 = characters, 1 = scenes
-                startActivity(in);
+                name.setText("");
+                Toast.makeText(this, "Scene with that name already exists in this play.", Toast.LENGTH_LONG).show();
             }
-        } else {
-            name.setText("");
-            Toast.makeText(this, "Scene with that name already exists in this play.", Toast.LENGTH_LONG).show();
-        }
+        } else { Toast.makeText(this, "Please Enter Name of Scene", Toast.LENGTH_LONG).show(); }
     }
 
     @Override

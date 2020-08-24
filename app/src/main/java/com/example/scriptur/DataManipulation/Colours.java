@@ -1,4 +1,4 @@
-package com.example.scriptur;
+package com.example.scriptur.DataManipulation;
 
 import java.util.ArrayList;
 import java.util.Random;

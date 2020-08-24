@@ -1,5 +1,6 @@
 package com.example.scriptur;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.scriptur.DataManipulation.TextToLines;
 import com.example.scriptur.Database.Character;
 import com.example.scriptur.Database.DBAdaptor;
 import com.google.android.gms.vision.Frame;
@@ -29,23 +31,36 @@ public class PictureScanActivity extends AppCompatActivity {
     DBAdaptor DBA;
     ArrayList<Character> characterList;
     ArrayList<String> characterNames;
-    int sceneID, playID;
+    int sceneID, playID ,order;
+    boolean insertLine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture_scan);
         setTitle("Insert Lines From Picture");
+        if (getSupportActionBar() != null) {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(false);
+        }
 
 
         photo = (ImageView) findViewById(R.id.ivPhoto);
         capture = (Button) findViewById(R.id.btnInputMultiLines);
 
+
+        DBA = new DBAdaptor(this);
+
         Intent in = getIntent();
         String photoPath = in.getStringExtra("PATH");
         sceneID = in.getIntExtra("SCENE_ID", 1);
+        order = in.getIntExtra("ORDER_NUM", -1);
+        insertLine = true;
+        if(order == -1) {
+            insertLine = false;
+            order = DBA.getNumberOfLinesInScene(sceneID);
+        }
 
-        DBA = new DBAdaptor(this);
         playID = DBA.getSceneByID(sceneID).getPlay().getUID();
         characterList = DBA.getCharactersBySceneID(sceneID);
         characterNames = new ArrayList<String>();
@@ -98,8 +113,12 @@ public class PictureScanActivity extends AppCompatActivity {
                     break;
                 }
             }
-            int order = DBA.getNumberOfLinesInScene(sceneID);
+            if(insertLine) {
+                DBA.moveLinesDown(sceneID, order, linesFromImage.size());
+                insertLine = false;//already moved lines that fall below.
+            }
             DBA.insertLine(insertCharacter.getUID(), line.substring(characterLineDivide + 1), sceneID, order);
+            order++;
         }
         Toast.makeText(this, "" + linesFromImage.size() + " Lines added to Scene", Toast.LENGTH_LONG).show();
         Intent in = new Intent(this, Line_List_Activity.class);

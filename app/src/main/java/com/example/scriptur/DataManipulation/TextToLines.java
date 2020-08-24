@@ -1,4 +1,4 @@
-package com.example.scriptur;
+package com.example.scriptur.DataManipulation;
 
 import android.util.Log;
 import android.util.SparseArray;
@@ -65,6 +65,7 @@ public class TextToLines {
         boolean blockIncludesCharacter = false, lineIncludesCharacter = false;
         String character = "";
         ArrayList<String> linesRecognised = new ArrayList<String>();
+        ArrayList<String> characterRecognised = new ArrayList<String>();
         int resultindex = -1;
 
         while(Blockcursor < textBlock.size()) {
@@ -104,7 +105,8 @@ public class TextToLines {
 
                     if(lineIncludesCharacter) {
                         int endOfCharacterPrefix = textInLine.indexOf(character) + character.length() + 2;
-                        String dialog = character + ": " + textInLine.substring(endOfCharacterPrefix);
+                        characterRecognised.add(character + ": ");
+                        String dialog = textInLine.substring(endOfCharacterPrefix);
                         linesRecognised.add(dialog);
                     } else if (foundFirstDialog && !lineIncludesCharacter) {
                         String dialog = linesRecognised.get(resultindex) + " " + textInLine;
@@ -120,7 +122,7 @@ public class TextToLines {
         for(int i = 0; i < linesRecognised.size(); i++) {
             String dialog = removeStageDirections(linesRecognised.get(i));
             Log.d("Dialog Only", dialog);
-            linesRecognised.set(i, dialog);
+            linesRecognised.set(i, "" + characterRecognised.get(i) + dialog);
         }
         return linesRecognised;
     }

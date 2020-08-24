@@ -1,4 +1,4 @@
-package com.example.scriptur;
+package com.example.scriptur.DataManipulation;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;

@@ -1,5 +1,6 @@
 package com.example.scriptur;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -22,6 +23,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.scriptur.DataManipulation.Colours;
 import com.example.scriptur.Database.Character;
 import com.example.scriptur.Database.DBAdaptor;
 
@@ -35,6 +37,7 @@ public class UpdateCharacterActivity extends AppCompatActivity implements Adapte
 
     DBAdaptor DBA;
     EditText name;
+    ImageView topImage;
     Spinner genderSpinner;
     Switch userRoleSwitch;
     Button colourBtn;
@@ -55,9 +58,14 @@ public class UpdateCharacterActivity extends AppCompatActivity implements Adapte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_character);
         setTitle("Update Character");
+        if (getSupportActionBar() != null) {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(false);
+        }
 
         DBA = new DBAdaptor(this);
         name = (EditText) findViewById(R.id.etUpdateCharacterName);
+        topImage = (ImageView) findViewById(R.id.ivUpdateCharacter);
         genderSpinner = (Spinner) findViewById(R.id.spinnerUpdateGender);
         userRoleSwitch = (Switch) findViewById(R.id.switchUpdateUserRole);
         colourBtn = (Button) findViewById(R.id.btn_Update_Character_Colour);
@@ -70,6 +78,7 @@ public class UpdateCharacterActivity extends AppCompatActivity implements Adapte
         colour = character.getColour();
         avatar = character.getAvatarCode();
         colourBtn.setBackgroundColor(Color.parseColor(colour));
+        topImage.setBackgroundColor(Color.parseColor(colour));
         playid = character.getPlay().getUID();
         if(character.isUserPart()) {userRoleSwitch.setChecked(true); }
         else { userRoleSwitch.setChecked(false); }
@@ -92,12 +101,67 @@ public class UpdateCharacterActivity extends AppCompatActivity implements Adapte
         }
         genderSpinner.setSelection(spinnerIndex);
 
+        switch (spinnerIndex) {
+            case 0:
+                avatar = avatarNameArray[0].toLowerCase();
+                topImage.setImageResource(R.drawable.female1);
+                break;
+            case 1:
+                avatar = avatarNameArray[1].toLowerCase();
+                topImage.setImageResource(R.drawable.female2);
+                break;
+            case 2:
+                avatar = avatarNameArray[2].toLowerCase();
+                topImage.setImageResource(R.drawable.female3);
+                break;
+            case 3:
+                avatar = avatarNameArray[3].toLowerCase();
+                topImage.setImageResource(R.drawable.female4);
+                break;
+            case 4:
+                avatar = avatarNameArray[4].toLowerCase();
+                topImage.setImageResource(R.drawable.female5);
+                break;
+            case 5:
+                avatar = avatarNameArray[5].toLowerCase();
+                topImage.setImageResource(R.drawable.female6);
+                break;
+            case 6:
+                avatar = avatarNameArray[6].toLowerCase();
+                topImage.setImageResource(R.drawable.male1);
+                break;
+            case 7:
+                avatar = avatarNameArray[7].toLowerCase();
+                topImage.setImageResource(R.drawable.male2);
+                break;
+            case 8:
+                avatar = avatarNameArray[8].toLowerCase();
+                topImage.setImageResource(R.drawable.male3);
+                break;
+            case 9:
+                avatar = avatarNameArray[9].toLowerCase();
+                topImage.setImageResource(R.drawable.male4);
+                break;
+            case 10:
+                avatar = avatarNameArray[10].toLowerCase();
+                topImage.setImageResource(R.drawable.male5);
+                break;
+            case 11:
+                avatar = avatarNameArray[11].toLowerCase();
+                topImage.setImageResource(R.drawable.male6);
+                break;
+            default:
+                avatar = avatarNameArray[0].toLowerCase();
+                topImage.setImageResource(R.drawable.female1);
+        }
+
 
     }
 
     public void updateCharacterColourBtn(View v) {
         Colours colours = new Colours();
         colour = colours.randomColour();
+        topImage.setBackgroundColor(Color.parseColor(colour));
         colourBtn.setBackgroundColor(Color.parseColor(colour));
     }
 
@@ -159,34 +223,38 @@ public class UpdateCharacterActivity extends AppCompatActivity implements Adapte
     }
 
     public void updateCharacterBtn(View v) {
-        ArrayList<Character> characterList = DBA.getAllCharactersInPlay(playid);
-        String nameCapitalized = WordUtils.capitalizeFully(name.getText().toString().trim());
-        boolean validName = true;
-        for(Character characterDB: characterList) {
-            if (characterDB.getName().equalsIgnoreCase(nameCapitalized) && characterDB.getUID() != character.getUID()) {
-                validName = false;
+        if(name.getText().toString().length() > 0) {
+            ArrayList<Character> characterList = DBA.getAllCharactersInPlay(playid);
+            String nameCapitalized = WordUtils.capitalizeFully(name.getText().toString().trim());
+            boolean validName = true;
+            for (Character characterDB : characterList) {
+                if (characterDB.getName().equalsIgnoreCase(nameCapitalized) && characterDB.getUID() != character.getUID()) {
+                    validName = false;
+                }
             }
-        }
 
-        if(validName) {
-            if (userRoleSwitch.isChecked()) {
-                userRole = true;
+            if (validName) {
+                if (userRoleSwitch.isChecked()) {
+                    userRole = true;
+                } else {
+                    userRole = false;
+                }
+                character.setName(nameCapitalized);
+                character.setColour(colour);
+                character.setAvatarCode(avatar);
+                character.setUserPart(userRole);
+                DBA.updateCharacter(character);
+
+                Intent in = new Intent(this, SceneCharacterTabbedActivity.class);
+                in.putExtra("PLAY_ID", playid);
+                in.putExtra("TAB_NUM", 0); //decides which tab to open on 0 = characters, 1 = scenes
+                startActivity(in);
             } else {
-                userRole = false;
+                name.setText("");
+                Toast.makeText(this, "Character with that name already exists in this play.", Toast.LENGTH_LONG).show();
             }
-            character.setName(nameCapitalized);
-            character.setColour(colour);
-            character.setAvatarCode(avatar);
-            character.setUserPart(userRole);
-            DBA.updateCharacter(character);
-
-            Intent in = new Intent(this, SceneCharacterTabbedActivity.class);
-            in.putExtra("PLAY_ID", playid);
-            in.putExtra("TAB_NUM", 0); //decides which tab to open on 0 = characters, 1 = scenes
-            startActivity(in);
         } else {
-            name.setText("");
-            Toast.makeText(this, "Character with that name already exists in this play.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Enter Character Name.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -195,39 +263,51 @@ public class UpdateCharacterActivity extends AppCompatActivity implements Adapte
         switch(position) {
             case 0:
                 avatar = avatarNameArray[0].toLowerCase();
+                topImage.setImageResource(R.drawable.female1);
                 break;
             case 1:
                 avatar = avatarNameArray[1].toLowerCase();
+                topImage.setImageResource(R.drawable.female2);
                 break;
             case 2:
                 avatar = avatarNameArray[2].toLowerCase();
+                topImage.setImageResource(R.drawable.female3);
                 break;
             case 3:
                 avatar = avatarNameArray[3].toLowerCase();
+                topImage.setImageResource(R.drawable.female4);
                 break;
             case 4:
                 avatar = avatarNameArray[4].toLowerCase();
+                topImage.setImageResource(R.drawable.female5);
                 break;
             case 5:
                 avatar = avatarNameArray[5].toLowerCase();
+                topImage.setImageResource(R.drawable.female6);
                 break;
             case 6:
                 avatar = avatarNameArray[6].toLowerCase();
+                topImage.setImageResource(R.drawable.male1);
                 break;
             case 7:
                 avatar = avatarNameArray[7].toLowerCase();
+                topImage.setImageResource(R.drawable.male2);
                 break;
             case 8:
                 avatar = avatarNameArray[8].toLowerCase();
+                topImage.setImageResource(R.drawable.male3);
                 break;
             case 9:
                 avatar = avatarNameArray[9].toLowerCase();
+                topImage.setImageResource(R.drawable.male4);
                 break;
             case 10:
                 avatar = avatarNameArray[10].toLowerCase();
+                topImage.setImageResource(R.drawable.male5);
                 break;
             case 11:
                 avatar = avatarNameArray[11].toLowerCase();
+                topImage.setImageResource(R.drawable.male6);
                 break;
         }
 

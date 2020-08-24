@@ -1,6 +1,7 @@
 package com.example.scriptur;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.scriptur.Database.Character;
 import com.example.scriptur.Database.DBAdaptor;
@@ -38,6 +40,7 @@ public class NewLineActivity extends AppCompatActivity implements AdapterView.On
     DBAdaptor DBA;
     EditText etDialog;
     Spinner characterSpinner;
+    boolean lineInsert;
     private static final String[] avatarNameArray = {"Female 1", "Female 2", "Female 3", "Female 4", "Female 5", "Female 6",
                                                     "Male 1", "Male 2", "Male 3", "Male 4", "Male 5", "Male 6"};
     private static final Integer[] avatarImageArray = {R.drawable.female1, R.drawable.female2, R.drawable.female3,
@@ -54,6 +57,10 @@ public class NewLineActivity extends AppCompatActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_line);
         setTitle("New Line");
+        if (getSupportActionBar() != null) {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(false);
+        }
 
         DBA = new DBAdaptor(this);
         etDialog = (EditText) findViewById(R.id.etLineDialog);
@@ -62,7 +69,13 @@ public class NewLineActivity extends AppCompatActivity implements AdapterView.On
 
         Intent in = getIntent();
         sceneID = in.getIntExtra("SCENE_ID", 1);
-        order = DBA.getNumberOfLinesInScene(sceneID);
+        order = in.getIntExtra("ORDER_NUM", -1);
+        lineInsert = true;
+        if(order == -1) {
+            lineInsert = false;
+            order = DBA.getNumberOfLinesInScene(sceneID);
+        }
+
         characterList = DBA.getCharactersBySceneID(sceneID);
         String[] characterNamesList = new String[characterList.size()];
         for(int i = 0; i < characterNamesList.length; i++) {
@@ -87,19 +100,20 @@ public class NewLineActivity extends AppCompatActivity implements AdapterView.On
     }
 
     public void saveLineBtn(View v) {
-        String dialogCapitalized = etDialog.getText().toString().trim().substring(0,1).toUpperCase() + etDialog.getText().toString().trim().substring(1) ;
-        DBA.insertLine(characterID, dialogCapitalized, sceneID, order);
+        if(etDialog.getText().toString().length() > 0) {
+            if (lineInsert) {
+                DBA.moveLinesDown(sceneID, order, 1);
+            }
+            String dialogCapitalized = etDialog.getText().toString().trim().substring(0, 1).toUpperCase() + etDialog.getText().toString().trim().substring(1);
+            DBA.insertLine(characterID, dialogCapitalized, sceneID, order);
 
-        Intent in = new Intent(this, Line_List_Activity.class);
-        in.putExtra("SCENE_ID", sceneID);
-        startActivity(in);
+            Intent in = new Intent(this, Line_List_Activity.class);
+            in.putExtra("SCENE_ID", sceneID);
+            startActivity(in);
+        } else { Toast.makeText(this, "Please Enter Character Dialog" , Toast.LENGTH_LONG).show(); }
     }
 
     public void openCameraBtn(View v) {
-//        Intent in = new Intent(this, CameraViewActivity.class);
-//        in.putExtra("SCENE_ID", sceneID);
-//        startActivity(in);
-
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, 100);
         }
@@ -130,6 +144,9 @@ public class NewLineActivity extends AppCompatActivity implements AdapterView.On
                 Intent in = new Intent(this, PictureScanActivity.class);
                 in.putExtra("PATH", photoPath);
                 in.putExtra("SCENE_ID", sceneID);
+                if(lineInsert) {
+                    in.putExtra("ORDER_NUM", order);
+                }
                 startActivity(in);
             }
         }

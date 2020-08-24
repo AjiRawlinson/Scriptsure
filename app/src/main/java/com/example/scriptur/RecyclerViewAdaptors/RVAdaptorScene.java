@@ -23,22 +23,35 @@ public class RVAdaptorScene extends RecyclerView.Adapter<RVAdaptorScene.RVHolder
     ArrayList<Scene> sceneList;
     ArrayList<Line> lineList;
     OnRowListener rowListener;
-    int lineNum, userLineNum, avgScore;
+    Integer[] avgScoreArray, lineInSceneArray, userLineInSceneArray;
 
     public RVAdaptorScene(Context context, ArrayList<Scene> scenes, ArrayList<Line> lines, OnRowListener rowListener) {
         this.context = context;
         this.sceneList = scenes;
         this.lineList = lines;
         this.rowListener = rowListener;
-        this.lineNum = lineList.size();
-        this.userLineNum = 0;
-        this.avgScore = -1;
-        for(Line line: lineList) {
-            if(line.getCharacter().isUserPart()) {
-                userLineNum++;
-                if(line.getScore() >= 0) { avgScore += line.getScore(); }
-            }
+        this.avgScoreArray = new Integer[scenes.size()];
+        this.lineInSceneArray = new Integer[scenes.size()];
+        this.userLineInSceneArray = new Integer[scenes.size()];
 
+        int sceneIndex = 0;
+        for(Scene scene: sceneList) {
+            avgScoreArray[sceneIndex] = -1;
+            lineInSceneArray[sceneIndex] = 0;
+            userLineInSceneArray[sceneIndex] = 0;
+            for(Line line: lineList) {
+                if(line.getScene().getUID() == scene.getUID()) {
+                    lineInSceneArray[sceneIndex]++;
+                    if(line.getCharacter().isUserPart()) {
+                        avgScoreArray[sceneIndex] += line.getScore();
+                        userLineInSceneArray[sceneIndex]++;
+                    }
+                }
+            }
+            if(userLineInSceneArray[sceneIndex] != 0) {
+                avgScoreArray[sceneIndex] = (avgScoreArray[sceneIndex] + 1) / userLineInSceneArray[sceneIndex];
+            }
+            sceneIndex++;
         }
     }
 
@@ -53,11 +66,8 @@ public class RVAdaptorScene extends RecyclerView.Adapter<RVAdaptorScene.RVHolder
     @Override
     public void onBindViewHolder(@NonNull RVHolderScene holder, int position) {
         holder.name.setText(sceneList.get(position).getName());
-        if(userLineNum != 0) {//THOU MUST NOT DIVIDE BY ZERO
-            avgScore = (avgScore + 1) / userLineNum; //plus one to get rid of the default -1 inn
-        }
-        if(avgScore >= 0) { holder.data.setText("User Lines: " + userLineNum + "/" + lineList.size() + " Average Score: " + avgScore); }
-        else { holder.data.setText("User Lines: " + userLineNum + "/" + lineList.size() + " Average Score: N/A"); }
+        if(avgScoreArray[position] >= 0) { holder.data.setText("User Lines: " + userLineInSceneArray[position] + "/" + lineInSceneArray[position] + " Average Score: " + avgScoreArray[position]); }
+        else { holder.data.setText("User Lines: " + userLineInSceneArray[position] + "/" + lineInSceneArray[position] + " Average Score: N/A"); }
         holder.itemView.setBackgroundColor(Color.parseColor(sceneList.get(position).getColour()));
     }
 

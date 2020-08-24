@@ -184,10 +184,12 @@ public class CharacterFragment extends Fragment implements RVAdaptorCharacter.On
                 switch(which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         DBA.deleteCharacter(characterList.get(position));
-                        Intent in = new Intent(getActivity(), SceneCharacterTabbedActivity.class);
-                        in.putExtra("TAB_NUM", 0);
-                        in.putExtra("PLAY_ID", playid);
-                        startActivity(in);
+                        ArrayList<Character> newCharacterList = DBA.getAllCharactersInPlay(playid);
+                        for(int i = 0; i < newCharacterList.size(); i++ ) {
+                            characterList.set(i, newCharacterList.get(i));
+                        }
+                        characterList.remove(characterList.size() - 1);
+                        RVACharacter.notifyDataSetChanged();
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
 //                        do nothing

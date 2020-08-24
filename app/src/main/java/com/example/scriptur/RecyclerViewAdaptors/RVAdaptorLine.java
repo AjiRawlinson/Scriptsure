@@ -51,7 +51,7 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
             if(lines.get(position).getScore() >= 0) { holder.data.setText("Last Score: " +lines.get(position).getScore()); }
             else { holder.data.setText("Last Score: N/A"); }
             holder.starImage.setImageResource(android.R.drawable.star_on);
-        }
+        } else {  holder.starImage.setImageResource(android.R.drawable.star_off); }
         switch (lines.get(position).getCharacter().getAvatarCode()) {
             case "female 1":
                 holder.avatarImage.setImageResource(R.drawable.female1);

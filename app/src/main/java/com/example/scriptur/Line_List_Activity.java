@@ -1,6 +1,7 @@
 package com.example.scriptur;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -28,12 +29,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.PopupMenu;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.scriptur.DataManipulation.CompareText;
 import com.example.scriptur.Database.DBAdaptor;
 import com.example.scriptur.Database.Line;
 import com.example.scriptur.RecyclerViewAdaptors.RVAdaptorLine;
@@ -42,7 +42,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Set;
-import java.util.zip.Inflater;
 
 public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLine.OnRowListener {
 
@@ -62,6 +61,10 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line_list);
+        if (getSupportActionBar() != null) {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(false);
+        }
 
         DBA = new DBAdaptor(this);
         currentLine = 0;
@@ -321,7 +324,7 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
 //                tts.speak(lineList.get(currentLine).getDialog(), TextToSpeech.QUEUE_FLUSH, null, "");
             }
         } else {
-            RVALine.notifyDataSetChanged();
+            updateRecyclerview();
             currentLine = 0;
             runThroughLines = false;
             playPause.setImageResource(R.drawable.play);
@@ -365,9 +368,10 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
         PopupMenu popup = new PopupMenu(this, v);
         popup.getMenu().add("Edit");
         popup.getMenu().add("Delete");
-//        popup.getMenu().add("Move Up"); //TODO
-//        popup.getMenu().add("Move Down"); //TODO
-//        insert line below?
+        popup.getMenu().add("Move Up");
+        popup.getMenu().add("Move Down");
+        popup.getMenu().add("Insert Line Above");
+        popup.getMenu().add("Insert Line Below");
         popup.show();
 
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -381,6 +385,26 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
                         break;
                     case "Delete":
                         deleteLineConfirmation(position);
+                        break;
+                    case "Move Up":
+                        moveLineUp(position);
+                        break;
+                    case "Move Down":
+                        moveLineDown(position);
+                        break;
+                    case "Insert Line Above":
+                        Intent in2 = new Intent(Line_List_Activity.this, NewLineActivity.class);
+                        in2.putExtra("SCENE_ID", actualLineList.get(position).getScene().getUID());
+                        int orderNum = actualLineList.get(position).getOrderNumber();
+                        in2.putExtra("ORDER_NUM", orderNum);
+                        startActivity(in2);
+                        break;
+                    case "Insert Line Below":
+                        Intent in3 = new Intent(Line_List_Activity.this, NewLineActivity.class);
+                        in3.putExtra("SCENE_ID", actualLineList.get(position).getScene().getUID());
+                        int orderNum3 = actualLineList.get(position).getOrderNumber() +1;
+                        in3.putExtra("ORDER_NUM", orderNum3);
+                        startActivity(in3);
                         break;
                     default://do nothing
                         break;
@@ -397,6 +421,14 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
                 switch(which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         DBA.deleteLine(displayLineList.get(position));
+                        ArrayList<Line> newLineList = DBA.getAllLinesInScene(sceneID);
+                        for(int i = 0; i < newLineList.size(); i++) { //notifying adapter on data set chanege only seems to work when you set chage, re geting it from DB
+                            displayLineList.set(i, newLineList.get(i));
+                            actualLineList.set(i , newLineList.get(i));
+                        }
+                        displayLineList.remove(displayLineList.size() - 1);
+                        actualLineList.remove((actualLineList.size() - 1));
+                        RVALine.notifyDataSetChanged();
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
 //                        do nothing
@@ -411,6 +443,39 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
                 .setMessage("Are you sure you want to delete this Line: ")
                 .setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
+    }
+
+    public void moveLineUp(int position) {
+        if (position > 0) {
+            Line lineBelow = actualLineList.get(position);
+            Line lineAbove = actualLineList.get(position - 1);
+            int tempOrder = lineAbove.getOrderNumber();
+            lineAbove.setOrderNumber(lineBelow.getOrderNumber());
+            lineBelow.setOrderNumber(tempOrder);
+            DBA.updateLine(lineBelow); DBA.updateLine(lineAbove);
+            updateRecyclerview();
+        } else { Toast.makeText(this, "Can't move Line up any further", Toast.LENGTH_LONG).show(); }
+    }
+
+    public void moveLineDown(int position) {
+        if (position < (actualLineList.size()- 1)) {
+            Line lineAbove = actualLineList.get(position);
+            Line lineBelow = actualLineList.get(position + 1);
+            int tempOrder = lineBelow.getOrderNumber();
+            lineBelow.setOrderNumber(lineAbove.getOrderNumber());
+            lineAbove.setOrderNumber(tempOrder);
+            DBA.updateLine(lineBelow); DBA.updateLine(lineAbove);
+            updateRecyclerview();
+        } else { Toast.makeText(this, "Can't move Line down any further", Toast.LENGTH_LONG).show(); }
+    }
+
+    public void updateRecyclerview() {
+        ArrayList<Line> newLineList = DBA.getAllLinesInScene(sceneID);
+        for(int i = 0; i < newLineList.size(); i++) { //notifying adapter on data set chanege only seems to work when you set chage, re geting it from DB
+            displayLineList.set(i, newLineList.get(i));
+            actualLineList.set(i , newLineList.get(i));
+        }
+        RVALine.notifyDataSetChanged();
     }
 
     public void checkPermission() {

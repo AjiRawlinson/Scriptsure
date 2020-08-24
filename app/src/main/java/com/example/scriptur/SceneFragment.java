@@ -17,7 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.scriptur.Database.Character;
 import com.example.scriptur.Database.DBAdaptor;
 import com.example.scriptur.Database.Line;
 import com.example.scriptur.Database.Scene;
@@ -159,8 +161,8 @@ public class SceneFragment extends Fragment implements RVAdaptorScene.OnRowListe
         PopupMenu popup = new PopupMenu(getActivity(), v);
         popup.getMenu().add("Edit");
         popup.getMenu().add("Delete");
-//        popup.getMenu().add("Move Up"); //TODO
-//        popup.getMenu().add("Move Down"); //TODO
+        popup.getMenu().add("Move Up");
+        popup.getMenu().add("Move Down");
         popup.show();
 
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -174,6 +176,12 @@ public class SceneFragment extends Fragment implements RVAdaptorScene.OnRowListe
                         break;
                     case "Delete":
                         deleteSceneConfirmation(position);
+                        break;
+                    case "Move Up":
+                        moveSceneUp(position);
+                        break;
+                    case "Move Down":
+                        moveSceneDown(position);
                         break;
                     default://do nothing
                         break;
@@ -190,6 +198,12 @@ public class SceneFragment extends Fragment implements RVAdaptorScene.OnRowListe
                 switch(which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         DBA.deleteScene(sceneList.get(position));
+                        ArrayList<Scene> newScenesList = DBA.getAllScenesInPlay(playid);
+                        for(int i = 0; i < newScenesList.size(); i++) {
+                            sceneList.set(i, newScenesList.get(i));
+                        }
+                        sceneList.remove(sceneList.size() - 1);
+                        RVAScene.notifyDataSetChanged();
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
 //                        do nothing
@@ -205,4 +219,36 @@ public class SceneFragment extends Fragment implements RVAdaptorScene.OnRowListe
                 .setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
     }
+
+    public void moveSceneUp(int position) {
+        if(position > 0) {
+            Scene sceneBelow = sceneList.get(position);
+            Scene sceneAbove = sceneList.get(position - 1);
+
+            DBA.changeSceneOrder(sceneAbove.getUID(), sceneBelow.getOrder());
+            DBA.changeSceneOrder(sceneBelow.getUID(), sceneAbove.getOrder());
+            updateRecyclerView();
+        } else { Toast.makeText(getActivity(), "Can't move Scene up any further", Toast.LENGTH_LONG).show(); }
+    }
+
+    public void moveSceneDown(int position) {
+        if(position < (sceneList.size() - 1)) {
+            Scene sceneBelow = sceneList.get(position +1);
+            Scene sceneAbove = sceneList.get(position);
+
+            DBA.changeSceneOrder(sceneAbove.getUID(), sceneBelow.getOrder());
+            DBA.changeSceneOrder(sceneBelow.getUID(), sceneAbove.getOrder());
+            updateRecyclerView();
+        } else { Toast.makeText(getActivity(), "Can't move Scene down any further", Toast.LENGTH_LONG).show(); }
+    }
+
+    public void updateRecyclerView() {
+        ArrayList<Scene> newSceneList = DBA.getAllScenesInPlay(playid);
+        for(int i = 0; i < newSceneList.size(); i++) {
+            sceneList.set(i, newSceneList.get(i));
+        }
+        RVAScene.notifyDataSetChanged();
+    }
+
+
 }

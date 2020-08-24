@@ -253,14 +253,27 @@ public class DBAdaptor {
         deleteSceneCharacterRowsByScene(scene);
         String[] UID = {"" + scene.getUID()};
         db.delete(myHelper.SCENE_TABLE_NAME, myHelper.SCENE_ID + " = ?", UID);
+        moveSceneOrderUpOne(scene.getPlay().getUID(), scene.getOrder());
     }
 
-    public void updateScene(Scene scene, ArrayList<Integer> characterIDList) {
+    public void updateSceneOnly(Scene scene) {
         SQLiteDatabase DB = myHelper.getWritableDatabase();
         String[] UID = {"" + scene.getUID()};
         ContentValues cv = new ContentValues();
         cv.put(myHelper.SCENE_NAME, scene.getName());
         cv.put(myHelper.SCENE_COLOUR, scene.getColour());
+        cv.put(myHelper.SCENE_ORDER, scene.getOrder());
+        DB.update(myHelper.SCENE_TABLE_NAME, cv, myHelper.SCENE_ID + " =?", UID);
+
+    }
+
+    public void updateSceneAndCharacterList(Scene scene, ArrayList<Integer> characterIDList) {
+        SQLiteDatabase DB = myHelper.getWritableDatabase();
+        String[] UID = {"" + scene.getUID()};
+        ContentValues cv = new ContentValues();
+        cv.put(myHelper.SCENE_NAME, scene.getName());
+        cv.put(myHelper.SCENE_COLOUR, scene.getColour());
+        cv.put(myHelper.SCENE_ORDER, scene.getOrder());
         DB.update(myHelper.SCENE_TABLE_NAME, cv, myHelper.SCENE_ID + " =?", UID);
         //Insert Scene_Character Join Table as well
         deleteSceneCharacterRowsByScene(scene);
@@ -301,7 +314,16 @@ public class DBAdaptor {
     }
 
     //if deleting scene, have to make sure order updates its self for other scenes,
-
+    public void moveSceneOrderUpOne(int playID, int orderNum) {
+        ArrayList<Scene> sceneList = getAllScenesInPlay(playID);
+        for(Scene scene: sceneList) {
+            if(scene.getOrder() >= orderNum) {
+                int newOrder = scene.getOrder() - 1;
+                scene.setOrder(newOrder);
+                updateSceneOnly(scene);
+            }
+        }
+    }
 
     public int getSceneIDByOrder(int playID, int order) {
         SQLiteDatabase DB = myHelper.getReadableDatabase();
@@ -313,6 +335,14 @@ public class DBAdaptor {
             return id;
         }
         return 0;
+    }
+
+    public void changeSceneOrder(int sceneID, int order) {
+        SQLiteDatabase DB = myHelper.getWritableDatabase();
+        String[] UID = {"" + sceneID};
+        ContentValues cv = new ContentValues();
+        cv.put(myHelper.SCENE_ORDER, order);
+        DB.update(myHelper.SCENE_TABLE_NAME, cv, myHelper.SCENE_ID + " =?", UID);
     }
 
     /*****************
@@ -372,6 +402,7 @@ public class DBAdaptor {
         SQLiteDatabase db = myHelper.getWritableDatabase();
         String[] UID = {"" + line.getUID()};
         db.delete(myHelper.LINE_TABLE_NAME, myHelper.LINE_ID + " = ?", UID);
+        moveLineOrderUpOne(line.getScene().getUID(), line.getOrderNumber());
     }
 
     public void updateLine(Line line) {
@@ -381,6 +412,7 @@ public class DBAdaptor {
         cv.put(myHelper.LINE_CHARACTER_ID_FK, line.getCharacter().getUID());
         cv.put(myHelper.LINE_DIALOG, line.getDialog());
         cv.put(myHelper.LINE_SCORE, line.getScore());
+        cv.put(myHelper.LINE_ORDER, line.getOrderNumber());
         DB.update(myHelper.LINE_TABLE_NAME, cv, myHelper.LINE_ID + " =?", UID);
 
     }
@@ -402,9 +434,41 @@ public class DBAdaptor {
         return null;
     }
 
+    public Line getLineByOrderInScene(int sceneID, int order) {
+        ArrayList<Line> lineList = getAllLines();
+        for(Line line: lineList) {
+            if(line.getScene().getUID() == sceneID && line.getOrderNumber() == order) {
+                return line;
+            }
+        }
+        return null;
+    }
+
     public int getNumberOfLinesInScene(int sceneID) {
         ArrayList<Line> lineList = getAllLinesInScene(sceneID);
         return lineList.size();
+    }
+
+    public void moveLineOrderUpOne(int sceneID, int orderNum) {
+        ArrayList<Line> lineList = getAllLinesInScene(sceneID);
+        for(Line line: lineList) {
+            if(line.getOrderNumber() >= orderNum) {
+                int newOrder = line.getOrderNumber() - 1;
+                line.setOrderNumber(newOrder);
+                updateLine(line);
+            }
+        }
+    }
+
+    public void moveLinesDown(int sceneID, int minOrder, int num) {
+        ArrayList<Line> lineList = getAllLinesInScene(sceneID);
+        for(Line line: lineList) {
+            if(line.getOrderNumber() >= minOrder) {
+                int newOrder = line.getOrderNumber() + num;
+                line.setOrderNumber(newOrder);
+                updateLine(line);
+            }
+        }
     }
 
     /*****************

@@ -1,4 +1,4 @@
-package com.example.scriptur;
+package com.example.scriptur.DataManipulation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,33 +18,48 @@ public class CompareText {
             "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same",
             "so", "than", "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"};
 
+    boolean onlyStopwords;
+
     public CompareText() {
+        this.onlyStopwords = false;
     }
 
     public int calculateScore(String actualText, String inputText) {
-        actualText = actualText.toLowerCase();
-        inputText = inputText.toLowerCase();
+        actualText = removePunctuation(actualText.toLowerCase());
+        inputText = removePunctuation(inputText.toLowerCase());
         double keyWords = compareKeyWords(getKeyWords(actualText), getKeyWords(inputText));
         double levensteinPercent = (double) levenshteinDistance(actualText, inputText) / (double) actualText.length();
-        if (levensteinPercent > 1.0) {
+        if (levensteinPercent > 1.0) { // if Levenstein Distance is larger than actual dialog length, put value to one, stops possibility of negative score
             levensteinPercent = 1.0;
-        } // if Levenstein Distance is larger than actual dialog length, put value to one, stops possibility of negative score
-        int percentage = (int) Math.round((keyWords * 80) + ((1 - levensteinPercent) * 20)); //score formula subject to change
-
+        }
+        int percentage = 0;
+        if(!onlyStopwords) {
+            percentage = (int) Math.round((keyWords * 80) + ((1 - levensteinPercent) * 20)); //score formula subject to change
+        } else {
+            percentage = (int) Math.round((1 - levensteinPercent) * 100);
+        }
         return percentage;
     }
 
     public String[] getKeyWords(String text) {
-        String[] allWords = text.replaceAll("[^a-zA-Z ]", "").split("\\s+");
+        String[] allWords = text.split("\\s+");
         String[] keyWords = removeStopWords(allWords);
         return keyWords;
+    }
+
+    public String removePunctuation(String text) {
+        String onlyWords = text.replaceAll("[^a-zA-Z ]", "");
+        return onlyWords;
     }
 
     public String[] removeStopWords(String[] text) {
         ArrayList<String> stopwordsAL = new ArrayList<>(Arrays.asList(stopwords));
         ArrayList<String> textAL = new ArrayList<>(Arrays.asList(text));
-        textAL.removeAll(stopwordsAL); // not working
+        textAL.removeAll(stopwordsAL);
 
+        if(textAL.size() == 0) {
+            onlyStopwords = true;
+        }
         String[] textList = new String[textAL.size()];
         for (int i = 0; i < textList.length; i++) {
             textList[i] = textAL.get(i).toString();
