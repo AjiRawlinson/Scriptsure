@@ -3,7 +3,6 @@ package com.example.scriptur;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -19,7 +18,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.scriptur.Database.Character;
 import com.example.scriptur.Database.DBAdaptor;
 import com.example.scriptur.Database.Line;
 import com.example.scriptur.Database.Scene;
@@ -151,7 +149,7 @@ public class SceneFragment extends Fragment implements RVAdaptorScene.OnRowListe
 
     @Override
     public void onRowClick(int position) {
-        Intent in = new Intent(getActivity(), Line_List_Activity.class);
+        Intent in = new Intent(getActivity(), LineListActivity.class);
         in.putExtra("SCENE_ID", sceneList.get(position).getUID());
         startActivity(in);
     }

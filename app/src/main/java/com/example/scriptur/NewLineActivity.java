@@ -107,7 +107,7 @@ public class NewLineActivity extends AppCompatActivity implements AdapterView.On
             String dialogCapitalized = etDialog.getText().toString().trim().substring(0, 1).toUpperCase() + etDialog.getText().toString().trim().substring(1);
             DBA.insertLine(characterID, dialogCapitalized, sceneID, order);
 
-            Intent in = new Intent(this, Line_List_Activity.class);
+            Intent in = new Intent(this, LineListActivity.class);
             in.putExtra("SCENE_ID", sceneID);
             startActivity(in);
         } else { Toast.makeText(this, "Please Enter Character Dialog" , Toast.LENGTH_LONG).show(); }
@@ -164,7 +164,7 @@ public class NewLineActivity extends AppCompatActivity implements AdapterView.On
 
     @Override
     public void onBackPressed() {
-        Intent in = new Intent(this, Line_List_Activity.class);
+        Intent in = new Intent(this, LineListActivity.class);
         in.putExtra("SCENE_ID", sceneID);
         startActivity(in);
     }

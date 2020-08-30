@@ -18,11 +18,11 @@
         <activity
             android:name=".SceneCharacterTabbedActivity"
             android:label="@string/title_activity_scene_character_tabbed"
-            android:parentActivityName=".Play_List_Activity"
+            android:parentActivityName=".PlayListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Play_List_Activity" />
+                android:value=".PlayListActivity" />
         </activity>
 
            <activity android:name=".PictureScanActivity"
@@ -33,10 +33,10 @@
            </activity>
         <activity
             android:name=".UpdateLineActivity"
-            android:parentActivityName=".Line_List_Activity">
+            android:parentActivityName=".LineListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Line_List_Activity" />
+                android:value=".LineListActivity" />
         </activity>
         <activity
             android:name=".UpdateSceneActivity"
@@ -54,12 +54,12 @@
         </activity>
         <activity
             android:name=".UpdatePlayActivity"
-            android:parentActivityName=".Play_List_Activity">
+            android:parentActivityName=".PlayListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Play_List_Activity" />
+                android:value=".PlayListActivity" />
         </activity>
-        <activity android:name=".Play_List_Activity">
+        <activity android:name=".PlayListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -67,7 +67,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Line_List_Activity"
+            android:name=".LineListActivity"
             android:parentActivityName=".SceneCharacterTabbedActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -75,10 +75,10 @@
         </activity>
         <activity
             android:name=".NewLineActivity"
-            android:parentActivityName=".Line_List_Activity">
+            android:parentActivityName=".LineListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Line_List_Activity" />
+                android:value=".LineListActivity" />
         </activity>
         <activity
             android:name=".NewCharacterActivity"
@@ -96,10 +96,10 @@
         </activity>
         <activity
             android:name=".NewPlayActivity"
-            android:parentActivityName=".Play_List_Activity">
+            android:parentActivityName=".PlayListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Play_List_Activity" />
+                android:value=".PlayListActivity" />
         </activity> <!-- TO BE DELETED -->
 
            <provider

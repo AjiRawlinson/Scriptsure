@@ -9,6 +9,8 @@ import com.google.android.gms.vision.text.TextBlock;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TextToLines {
 
@@ -26,7 +28,13 @@ public class TextToLines {
     }
 
     public String removeStageDirections(String line) {
-        String onlyDialog = line;
+        Pattern p = Pattern.compile("\\p{Alpha}");
+        Matcher m = p.matcher(line);
+        String onlyDialog;
+        if(m.find()) {
+            onlyDialog = line.substring(m.start());
+        } else { onlyDialog = line; }
+
         int stageDirectionStart;
         int stageDirectionEnd;
 
@@ -73,28 +81,31 @@ public class TextToLines {
             Log.d("LINES RECOGNISED", "Reach Block" + Blockcursor);
             String textInTextBlock = textBlock.get(Blockcursor).getValue();
             blockIncludesCharacter = false;
+            Log.d("Block:", "" + textInTextBlock);
 
             //search Block Text for any character names, the block of text we want to get dialog from
             for(String characterName: characterNames) {
 
-                if (textInTextBlock.contains(characterName + ":") || textInTextBlock.contains(characterName + ".")) {
+                if (textInTextBlock.contains(characterName)) {
                     blockIncludesCharacter = true;
                     break;
                 }
             }
 
+            //If current block of texts contains a Characters name
             if(blockIncludesCharacter) {
                 boolean foundFirstDialog = false;
                 int lineCursor = 0;
                 List<? extends Text> lines = textBlock.get(Blockcursor).getComponents();
 
-                while (lineCursor < lines.size()) { //loop through all lines in block
+                //loop through all lines in that block
+                while (lineCursor < lines.size()) {
                     String textInLine = lines.get(lineCursor).getValue();
                     lineIncludesCharacter = false;
 
                     //search line for characterName
                     for(String characterName: characterNames) {
-                        if (textInLine.contains(characterName + ":") || textInLine.contains(characterName + ".")) {
+                        if (textInLine.contains(characterName)) {
                             character = characterName;
                             lineIncludesCharacter = true;
                             foundFirstDialog = true;
@@ -103,27 +114,36 @@ public class TextToLines {
                         }
                     }
 
+                    //Add character to Arraylist of Characters, and rest of text text to Dialog Arraylist
                     if(lineIncludesCharacter) {
-                        int endOfCharacterPrefix = textInLine.indexOf(character) + character.length() + 2;
-                        characterRecognised.add(character + ": ");
+                        int endOfCharacterPrefix = textInLine.indexOf(character) + character.length();
+                        characterRecognised.add(removePunctuation(character) + ":");
                         String dialog = textInLine.substring(endOfCharacterPrefix);
                         linesRecognised.add(dialog);
-                    } else if (foundFirstDialog && !lineIncludesCharacter) {
+                    }
+
+                    //if No Character name found on this line, Adding dialog to current Dialog Arraylist Element
+                    else if (foundFirstDialog && !lineIncludesCharacter) {
                         String dialog = linesRecognised.get(resultindex) + " " + textInLine;
                         linesRecognised.set(resultindex, dialog);
                     }
                     lineCursor++;
                 }
-
-
             }
             Blockcursor++;
         }
-        for(int i = 0; i < linesRecognised.size(); i++) {
+
+        //looping through each line, and removing any stage direction and characternames so can me returned in on Arraylist
+        for(int i = 0; i < linesRecognised.size(); i++) { //
             String dialog = removeStageDirections(linesRecognised.get(i));
             Log.d("Dialog Only", dialog);
-            linesRecognised.set(i, "" + characterRecognised.get(i) + dialog);
+            linesRecognised.set(i, "" + characterRecognised.get(i) + dialog.trim());
         }
         return linesRecognised;
+    }
+
+    public String removePunctuation(String text){
+        String onlyLetters = text.replaceAll("[^a-zA-Z ]", "");
+        return onlyLetters;
     }
 }

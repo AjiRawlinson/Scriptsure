@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,7 +100,7 @@ public class UpdateLineActivity extends AppCompatActivity implements AdapterView
             line.setDialog(dialogCapitalized);
             DBA.updateLine(line);
 
-            Intent in = new Intent(this, Line_List_Activity.class);
+            Intent in = new Intent(this, LineListActivity.class);
             in.putExtra("SCENE_ID", sceneID);
             startActivity(in);
         } else { Toast.makeText(this, "Please Enter Character Dialog" , Toast.LENGTH_LONG).show(); }
@@ -119,7 +118,7 @@ public class UpdateLineActivity extends AppCompatActivity implements AdapterView
 
     @Override
     public void onBackPressed() {
-        Intent in = new Intent(this, Line_List_Activity.class);
+        Intent in = new Intent(this, LineListActivity.class);
         in.putExtra("SCENE_ID", line.getScene().getUID());
         startActivity(in);
     }

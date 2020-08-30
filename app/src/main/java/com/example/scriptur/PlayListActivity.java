@@ -12,8 +12,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
-import android.widget.Switch;
-import android.widget.Toast;
 
 import com.example.scriptur.Database.DBAdaptor;
 import com.example.scriptur.Database.Play;
@@ -22,7 +20,7 @@ import com.example.scriptur.RecyclerViewAdaptors.RVAdaptorPlay;
 
 import java.util.ArrayList;
 
-public class Play_List_Activity extends AppCompatActivity implements RVAdaptorPlay.OnRowListener {
+public class PlayListActivity extends AppCompatActivity implements RVAdaptorPlay.OnRowListener {
 
     RecyclerView rvPlay;
     ArrayList<Play> playList;
@@ -74,7 +72,7 @@ public class Play_List_Activity extends AppCompatActivity implements RVAdaptorPl
             public boolean onMenuItemClick(MenuItem item) {
                 switch(item.toString()) {
                     case "Edit":
-                        Intent in = new Intent(Play_List_Activity.this, UpdatePlayActivity.class);
+                        Intent in = new Intent(PlayListActivity.this, UpdatePlayActivity.class);
                         in.putExtra("PLAY_ID", playList.get(position).getUID());
                         startActivity(in);
                         break;

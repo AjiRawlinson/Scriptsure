@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Set;
 
-public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLine.OnRowListener {
+public class LineListActivity extends AppCompatActivity implements RVAdaptorLine.OnRowListener {
 
     RecyclerView rvLine;
     FloatingActionButton playPause;
@@ -103,7 +103,7 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
                     public void onDone(String utteranceId) {
                         new Thread() {
                             public void run() {
-                                Line_List_Activity.this.runOnUiThread(new Runnable() {
+                                LineListActivity.this.runOnUiThread(new Runnable() {
                                     public void run() { speakLine(); }
                                 });
                             }
@@ -165,7 +165,7 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
                 if(runThroughLines) { //this stops running this when skipping through lines when pressing next / previous line button
                     Vibrator vibrate = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                     vibrate.vibrate(VibrationEffect.createOneShot(700, 255));
-                    Toast.makeText(Line_List_Activity.this, "Missed Cue", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LineListActivity.this, "Missed Cue", Toast.LENGTH_SHORT).show();
                     Line line = actualLineList.get(currentLine - 1);
                     line.setScore(0);
                     DBA.updateLine(line);
@@ -179,7 +179,7 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
                 String voiceInput = voiceInputAL.toString().substring(1, (voiceInputAL.toString().length() - 1)); //removes square brackets around input string
                 CompareText ct = new CompareText();
                 lineScore = ct.calculateScore(actualLineList.get(currentLine - 1).getDialog(), voiceInput);
-                Toast.makeText(Line_List_Activity.this, "input line: " + voiceInput + "\nscore: " + lineScore + "%", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LineListActivity.this, "RECOGNISED: " + voiceInput + "\nSCORE: " + lineScore + "%", Toast.LENGTH_SHORT).show();
                 Line line = actualLineList.get(currentLine - 1);
                 line.setScore(lineScore);
                 DBA.updateLine(line);
@@ -379,7 +379,7 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
             public boolean onMenuItemClick(MenuItem item) {
                 switch(item.toString()) {
                     case "Edit":
-                        Intent in = new Intent(Line_List_Activity.this, UpdateLineActivity.class);
+                        Intent in = new Intent(LineListActivity.this, UpdateLineActivity.class);
                         in.putExtra("LINE_ID", actualLineList.get(position).getUID());
                         startActivity(in);
                         break;
@@ -393,14 +393,14 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
                         moveLineDown(position);
                         break;
                     case "Insert Line Above":
-                        Intent in2 = new Intent(Line_List_Activity.this, NewLineActivity.class);
+                        Intent in2 = new Intent(LineListActivity.this, NewLineActivity.class);
                         in2.putExtra("SCENE_ID", actualLineList.get(position).getScene().getUID());
                         int orderNum = actualLineList.get(position).getOrderNumber();
                         in2.putExtra("ORDER_NUM", orderNum);
                         startActivity(in2);
                         break;
                     case "Insert Line Below":
-                        Intent in3 = new Intent(Line_List_Activity.this, NewLineActivity.class);
+                        Intent in3 = new Intent(LineListActivity.this, NewLineActivity.class);
                         in3.putExtra("SCENE_ID", actualLineList.get(position).getScene().getUID());
                         int orderNum3 = actualLineList.get(position).getOrderNumber() +1;
                         in3.putExtra("ORDER_NUM", orderNum3);
@@ -540,6 +540,8 @@ public class Line_List_Activity extends AppCompatActivity implements RVAdaptorLi
 
     @Override
     public void onBackPressed() {
+        if(tts.isSpeaking()) { tts.stop(); }
+        recognizer.destroy();
         Intent in = new Intent(this, SceneCharacterTabbedActivity.class);
         in.putExtra("PLAY_ID", DBA.getSceneByID(sceneID).getPlay().getUID());
         in.putExtra("TAB_NUM", 1);

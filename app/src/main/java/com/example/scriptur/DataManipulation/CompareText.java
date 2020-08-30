@@ -68,9 +68,11 @@ public class CompareText {
     }
 
     public double compareKeyWords(String[] actual, String[] input) {
+        //getting the number of keywords in each string.
         int numActualKeywords = actual.length, numInputKeywards = input.length;
         double score = 0;
 
+        //nested for loop finding out how many keywords match
         for (int i = 0; i < numActualKeywords; i++) {
             for (int j = 0; j < numInputKeywards; j++) {
                 if (actual[i].equalsIgnoreCase(input[j])) {
@@ -79,8 +81,9 @@ public class CompareText {
                     break;//breaks after finding first match
                 }
             }
-            actual[i] = null;////stops repeating words in input text from artificially inflating the score
+            actual[i] = null;//stops repeating words in input text from artificially inflating the score
         }
+        //number of extra key words said by the user are didvided by 2 and taken away from the score.
         int delta = numInputKeywards - numActualKeywords; //how many extra words were said
         if (delta > 0) {
             score = score - (delta / 2);

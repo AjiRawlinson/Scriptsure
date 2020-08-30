@@ -102,72 +102,54 @@ public class NewCharacterActivity extends AppCompatActivity implements AdapterVi
         colourBtn.setBackgroundColor(Color.parseColor(colour));
     }
 
-    public void earlyTestVoice(String code) {
+    public void testAvatarVoice(String code) {
         Set<Voice> voices = tts.getVoices();
-        int count = 0;
-        Toast.makeText(this, "here!" + voices.size(), Toast.LENGTH_SHORT).show();
         for(Voice voice: voices) {
             if(voice.getName().contains("en-gb") && voice.getName().contains(code)) {
                 tts.setVoice(voice);
-                tts.speak("The quick brown fox jumped over the lazy dog", TextToSpeech.QUEUE_ADD, null, "");
-                Log.v("TAG", "Voice " + count + ": "  + voice.getName());
+                tts.speak("The quick brown fox jumped over the lazy dog",
+                        TextToSpeech.QUEUE_ADD, null, "");
             }
-            count++;
         }
     }
 
     public void testVoice(View v) {
-
         switch (avatar) {
             case "female 1":
-                earlyTestVoice("gba-local");
+                testAvatarVoice("gba-local");
                 break;
             case "female 2":
-//                avatar = "gba-network";
-                earlyTestVoice("gba-network");
+                testAvatarVoice("gba-network");
                 break;
             case "female 3":
-//                avatar = "gbc-local";
-                earlyTestVoice("gbc-local");
+                testAvatarVoice("gbc-local");
                 break;
             case "female 4":
-//                avatar = "gba-network";
-                earlyTestVoice("gbc-network");
+                testAvatarVoice("gbc-network");
                 break;
             case "female 5":
-//                avatar = "fis-local";
-                earlyTestVoice("fis-local");
+                testAvatarVoice("fis-local");
                 break;
             case "female 6":
-//                avatar = "fis-network";
-                earlyTestVoice("fis-network");
+                testAvatarVoice("fis-network");
                 break;
             case "male 1":
-//                avatar = "gbb-local";
-                earlyTestVoice("gbb-local");
+                testAvatarVoice("gbb-local");
                 break;
             case "male 2":
-//                avatar = "gbb-network";
-                earlyTestVoice("gbb-network");
+                testAvatarVoice("gbb-network");
                 break;
             case "male 3":
-//                avatar = "gbd-local";
-                earlyTestVoice("gbd-local");
+                testAvatarVoice("gbd-local");
                 break;
             case "male 4":
-//                avatar = "gbd-network";
-                earlyTestVoice("gbd-network");
+                testAvatarVoice("gbd-network");
                 break;
             case "male 5":
-//                avatar = "rjs-local";
-                earlyTestVoice("rjs-local");
+                testAvatarVoice("rjs-local");
                 break;
             case "male 6":
-//                avatar = "rjs-network";
-                earlyTestVoice("rjs-network");
-                break;
-            default:
-//                avatar = "fis-local";
+                testAvatarVoice("rjs-network");
                 break;
         }
     }

@@ -80,7 +80,7 @@ public class NewPlayActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent in = new Intent(this, Play_List_Activity.class);
+        Intent in = new Intent(this, PlayListActivity.class);
         startActivity(in);
     }
 

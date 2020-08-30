@@ -77,15 +77,8 @@ public class PictureScanActivity extends AppCompatActivity {
         bmOptions.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(photoPath, bmOptions);
 
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.max(1, Math.min(photoW/800, photoH/600));
-
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
-//        bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
         bitmap = BitmapFactory.decodeFile(photoPath, bmOptions);
@@ -121,7 +114,7 @@ public class PictureScanActivity extends AppCompatActivity {
             order++;
         }
         Toast.makeText(this, "" + linesFromImage.size() + " Lines added to Scene", Toast.LENGTH_LONG).show();
-        Intent in = new Intent(this, Line_List_Activity.class);
+        Intent in = new Intent(this, LineListActivity.class);
         in.putExtra("SCENE_ID", sceneID);
         startActivity(in);
     }

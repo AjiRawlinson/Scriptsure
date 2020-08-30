@@ -44,14 +44,17 @@ public class RVAdaptorLine extends RecyclerView.Adapter<RVAdaptorLine.RVHolderLi
     public void onBindViewHolder(@NonNull RVHolderLine holder, int position) {
         holder.CharacterName.setText(lines.get(position).getCharacter().getName());
         holder.dialog.setText(lines.get(position).getDialog());
+
         if(selectedPosition == position) {
             holder.itemView.setBackgroundColor(Color.parseColor(lines.get(position).getCharacter().getColour()));
         } else { holder.itemView.setBackgroundColor(Color.parseColor("#10" + lines.get(position).getCharacter().getColour().substring(1))); }
+
         if(lines.get(position).getCharacter().isUserPart()) {
             if(lines.get(position).getScore() >= 0) { holder.data.setText("Last Score: " +lines.get(position).getScore()); }
             else { holder.data.setText("Last Score: N/A"); }
             holder.starImage.setImageResource(android.R.drawable.star_on);
         } else {  holder.starImage.setImageResource(android.R.drawable.star_off); }
+
         switch (lines.get(position).getCharacter().getAvatarCode()) {
             case "female 1":
                 holder.avatarImage.setImageResource(R.drawable.female1);
